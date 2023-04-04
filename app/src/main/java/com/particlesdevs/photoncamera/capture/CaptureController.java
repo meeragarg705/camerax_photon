@@ -436,7 +436,6 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
         //Automatic 60fps preview
         @Override
         public void onCaptureStarted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, long timestamp, long frameNumber) {
-
             super.onCaptureStarted(session, request, timestamp, frameNumber);
             if (frameNumber % 20 == 19) {
                 if (ExposureIndex.index() > 8.0) {
@@ -1269,12 +1268,21 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
                                     FpsRangeHigh);
                         }
                         mPreviewInputRequest = mPreviewRequestBuilder.build();
+                        if (isBurstSession && isDualSession) {
+                            switch (CameraFragment.mSelectedMode) {
 
-                        //if(mSelectedMode != CameraMode.VIDEO)
-                        mCaptureSession.setRepeatingRequest(mPreviewInputRequest,
-                                mCaptureCallback, mBackgroundHandler);
-                        unlockFocus();
+                                case PHOTO:
 
+                                    mCaptureSession.captureBurst(captures, CaptureCallback, null);
+                                    break;
+
+                            }
+                        } else {
+                            //if(mSelectedMode != CameraMode.VIDEO)
+                            mCaptureSession.setRepeatingRequest(mPreviewInputRequest,
+                                    mCaptureCallback, mBackgroundHandler);
+                            unlockFocus();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -1288,7 +1296,6 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
                 @Override
                 public void onConfigureFailed(
                         @NonNull CameraCaptureSession cameraCaptureSession) {
-                    Log.d(TAG, "onConfigureFailed: " + cameraCaptureSession.toString());
                     showToast("Session onConfigureFailed");
                 }
             };
@@ -1620,6 +1627,9 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
                     PhotonCamera.getGyro().CompleteSequence();
                     taskResults.removeIf(Future::isDone); //remove already completed results
 
+                    Future<?> result = processExecutor.submit(() -> mImageSaver.runRaw(mCameraCharacteristics, mCaptureResult, BurstShakiness, cameraRotation));
+                    taskResults.add(result);
+                   
                 }
             };
 
@@ -1629,8 +1639,12 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
             if (isDualSession)
                 createCameraPreviewSession(true);
             else {
-                if (PhotonCamera.getSettings().selectedMode == CameraMode.PHOTO) {
-                    mCaptureSession.captureBurst(captures, CaptureCallback, null);
+                switch (PhotonCamera.getSettings().selectedMode) {
+
+                    case PHOTO:
+
+                        mCaptureSession.captureBurst(captures, CaptureCallback, null);
+                        break;
                 }
             }
 
@@ -1650,7 +1664,7 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
     public void reset3Aparams() {
         setAEMode(mPreviewRequestBuilder, PreferenceKeys.getAeMode());
         setAFMode(mPreviewRequestBuilder, CONTROL_AF_MODE_CONTINUOUS_PICTURE);
-//        rebuildPreviewBuilder();
+        rebuildPreviewBuilder();
     }
 
     public void setPreviewAEModeRebuild(int aeMode) {

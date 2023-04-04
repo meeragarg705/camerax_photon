@@ -188,7 +188,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
     public CameraFragmentViewModel getCameraFragmentViewModel() {
         return cameraFragmentViewModel;
     }
-
     @HunterDebug
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -201,7 +200,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         supportedDevice = Objects.requireNonNull(PhotonCamera.getInstance(activity)).getSupportedDevice();
         supportedDevice.loadCheck();
     }
-
     @HunterDebug
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -213,7 +211,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         setModelsToLayout();
         return cameraFragmentBinding.getRoot();
     }
-
     private void initMembers() {
         //create the viewmodel which updates the model
         cameraFragmentViewModel = new ViewModelProvider(this).get(CameraFragmentViewModel.class);
@@ -241,7 +238,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         // associating AuxButtonsModel with layout
         cameraFragmentBinding.setAuxmodel(auxButtonsViewModel.getAuxButtonsModel());
     }
-
     @HunterDebug
     @Override
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
@@ -262,7 +258,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         settingsBarEntryProvider.addEntries(cameraFragmentBinding.settingsBar);
     }
 
-    private void updateSettingsBar() {
+    private void updateSettingsBar(){
         settingsBarEntryProvider.updateAllEntries();
         settingsBarEntryProvider.addEntries(cameraFragmentBinding.settingsBar);
         this.mCameraUIView.refresh(CaptureController.isProcessing);
@@ -297,7 +293,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
-
     @HunterDebug
     @Override
     public void onResume() {
@@ -309,7 +304,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             PhotonCamera.getGyro().register();
             PhotonCamera.getGravity().register();
             burstPlayer = MediaPlayer.create(activity, R.raw.sound_burst2);
-            endPlayer = MediaPlayer.create(activity, R.raw.sound_end);
+            endPlayer = MediaPlayer.create(activity,R.raw.sound_end);
             cameraFragmentViewModel.updateGalleryThumb(null);
         });
         cameraFragmentViewModel.onResume();
@@ -324,7 +319,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         if (cameraFragmentBinding != null && captureController != null) {
             View focusCircle = cameraFragmentBinding.layoutViewfinder.touchFocus;
             textureView.post(() -> {
-                mTouchFocus = new TouchFocus(captureController, focusCircle, textureView);
+                mTouchFocus = new TouchFocus(captureController,focusCircle,textureView);
             });
         }
     }
@@ -432,7 +427,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
                     surfaceView.setAERect(null);
                 }
                 surfaceView.setDebugText(Logger.createTextFrom(stringMap));
-//                surfaceView.refresh();
+                surfaceView.refresh();
             } else {
                 if (surfaceView.isCanvasDrawn) {
                     surfaceView.clear();
@@ -449,17 +444,17 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         float height = (((float) meteringRectangle.getWidth() / captureController.mImageReaderPreview.getWidth()) * (textureView.getHeight()));
         //left = textureView.getWidth() - left;
         return new RectF(
-
-                textureView.getWidth() - left - width,//Right
+                //meteringRectangle.getY()-left, //Left
+                textureView.getWidth()-left-width,//Right
                 top,  //Top
-
-                textureView.getWidth() - left,
+                //meteringRectangle.getY() - (left + width),//Right
+                textureView.getWidth()-left,
                 top + height //Bottom
         );
     }
 
     private String getResultFieldName(String prefix, Integer value) {
-        if (value == null) return "";
+        if(value == null) return "";
         for (Field f : this.metadataFields)
             if (f.getName().startsWith(prefix)) {
                 try {
@@ -708,11 +703,10 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         }
 
         private long prevPlayTime = 0;
-
         @Override
         public void onFrameCaptureStarted(Object o) {
             long seekDelay = 50;
-            if (prevPlayTime + seekDelay < System.currentTimeMillis()) {
+            if(prevPlayTime + seekDelay < System.currentTimeMillis()){
                 prevPlayTime = System.currentTimeMillis();
                 burstPlayer.seekTo(0);
             }
@@ -721,7 +715,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         @Override
         public void onBurstPrepared(Object o) {
         }
-
         @Override
         public void onFrameCaptureProgressed(Object o) {
         }
@@ -857,16 +850,24 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
 
         private void reConfigureModeViews(CameraMode mode) {
             Log.d(TAG, "Current Mode:" + mode.name());
-            this.topbar.setEisVisible(true);
-            this.topbar.setFpsVisible(true);
-            this.topbar.setTimerVisible(true);
-            cameraFragmentBinding.settingsBar.setChildVisibility(R.id.eis_entry_layout, View.VISIBLE);
-            cameraFragmentBinding.settingsBar.setChildVisibility(R.id.fps_entry_layout, View.VISIBLE);
-            cameraFragmentBinding.settingsBar.setChildVisibility(R.id.timer_entry_layout, View.VISIBLE);
-            cameraFragmentBinding.settingsBar.setChildVisibility(R.id.hdrx_entry_layout, View.GONE);
-            this.mShutterButton.setBackgroundResource(R.drawable.roundbutton);
-            cameraFragmentBinding.layoutBottombar.layoutBottombar.setBackground(null);
-            cameraFragmentBinding.getRoot().setBackground(Utilities.resolveDrawable(requireActivity(), R.attr.cameraFragmentBackground));
+            switch (mode) {
+
+                case PHOTO:
+
+                default:
+                    this.topbar.setEisVisible(true);
+                    this.topbar.setFpsVisible(true);
+                    this.topbar.setTimerVisible(true);
+                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.eis_entry_layout, View.VISIBLE);
+                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.fps_entry_layout, View.VISIBLE);
+                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.timer_entry_layout, View.VISIBLE);
+                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.hdrx_entry_layout, View.GONE);
+                    this.mShutterButton.setBackgroundResource(R.drawable.roundbutton);
+                    cameraFragmentBinding.layoutBottombar.layoutBottombar.setBackground(null);
+                    cameraFragmentBinding.getRoot().setBackground(Utilities.resolveDrawable(requireActivity(),R.attr.cameraFragmentBackground));
+                    break;
+
+            }
             toggleConstraints(mode);
         }
 
@@ -877,18 +878,20 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
                                 .textureHolder
                                 .findViewById(R.id.camera_container)
                                 .getLayoutParams();
-                if (mode == CameraMode.PHOTO) {
-                    camera_containerLP.topToTop = -1;
-                    camera_containerLP.topToBottom = R.id.layout_topbar;
+                switch (mode){
+
+                    case PHOTO:
+
+                        camera_containerLP.topToTop = -1;
+                        camera_containerLP.topToBottom = R.id.layout_topbar;
                 }
 
             }
         }
-
         @Override
         public void refresh(boolean processing) {
-//            cameraFragmentBinding.invalidateAll();
-//            this.reConfigureModeViews(CameraMode.valueOf(PreferenceKeys.getCameraModeOrdinal()));
+            cameraFragmentBinding.invalidateAll();
+            this.reConfigureModeViews(CameraMode.valueOf(PreferenceKeys.getCameraModeOrdinal()));
             this.resetCaptureProgressBar();
             if (!processing) {
                 this.activateShutterButton(true);
@@ -1064,14 +1067,20 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
 
         }
 
-        private void setID(String input) {
+        private void setID(String input){
             PreferenceKeys.setCameraID(String.valueOf(input));
         }
-
         @Override
         public void onCameraModeChanged(CameraMode cameraMode) {
             PreferenceKeys.setCameraModeOrdinal(cameraMode.ordinal());
             Log.d(TAG, "onCameraModeChanged() called with: cameraMode = [" + cameraMode + "]");
+            switch (cameraMode) {
+                case PHOTO:
+
+                default:
+                    break;
+
+            }
             this.restartCamera();
         }
 
