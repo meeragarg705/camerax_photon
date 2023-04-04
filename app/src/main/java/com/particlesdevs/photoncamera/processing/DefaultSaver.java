@@ -32,13 +32,11 @@ public class DefaultSaver extends SaverImplementation {
     }
 
     public void addRAW16(Image image) {
-        if (PhotonCamera.getSettings().selectedMode == CameraMode.UNLIMITED) {
-            mUnlimitedProcessor.unlimitedCycle(image);
-        } else {
+
             Log.d(TAG, "start buffer size:" + IMAGE_BUFFER.size());
             image.getFormat();
             IMAGE_BUFFER.add(image);
-        }
+
     }
 
     public void addJPEG(Image image) {

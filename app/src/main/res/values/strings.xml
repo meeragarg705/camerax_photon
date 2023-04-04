@@ -3,8 +3,8 @@
     <string name="iso" translatable="false">"ISO "</string>
     <string name="icon_string" translatable="false">Icon</string>
     <string name="backup_file_name" translatable="false">PCAM_BKP_%1$s</string>
-    <string name="app_name" translatable="false">PhotonCamera</string>
-    <string name="device_support" translatable="false">PhotonCamera Pro</string>
+    <string name="app_name" translatable="false">Camera App</string>
+    <string name="device_support" translatable="false">CameraApp Pro</string>
     <string name="request_permission">This app needs camera permission.</string>
     <string name="camera_error">This device doesn\'t support Camera2 API.</string>
     <string name="luma_nr_count">Luminance Noise Reduction Strength</string>
@@ -124,4 +124,17 @@
     <string name="turn_on_system_nr">System Noise Reduction</string>
     <string name="wide169" translatable="false">16:9</string>
 
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="prefCategory_notifications">AWS</string>
+    <string name="aws_config">AWS Configuration</string>
+    <string name="pref_notificationToggle">notification toggol</string>
+    <string name="pref_notificationTime">notification time</string>
+    <string name="pref_notificationTime_summary">not time summry</string>
+    <string name="please_enter_your_pool_id">Please Enter Your Pool ID</string>
+    <string name="aws_config_pool_id">AWS POOL ID</string>
+
+    <string name="please_enter_region_id">Please Enter Your AWS Region</string>
+    <string name="aws_region_id">AWS Region</string>
+    <string name="please_enter_aws_bucket_name">Please Enter Your AWS Bucket Name</string>
+    <string name="aws_bucket_name">AWS Bucket Name</string>
 </resources>

@@ -111,7 +111,7 @@ public class PostPipeline extends GLBasePipeline {
     }
 
     private void BuildDefaultPipeline() {
-        boolean nightMode = PhotonCamera.getSettings().selectedMode == CameraMode.NIGHT;
+
         add(new Bayer2Float());
         add(new ExposureFusionBayer2());
         switch (PhotonCamera.getSettings().cfaPattern) {
@@ -124,11 +124,7 @@ public class PostPipeline extends GLBasePipeline {
                 break;
             }
             default: {
-                if (nightMode)
-                    add(new HotPixelFilter());
-                //if(PhotonCamera.getSettings().hdrxNR) {
-                //add(new ESD3DBayerCS());
-                //}
+
                 add(new Demosaic2());
 
                 //add(new ImpulsePixelFilter());
@@ -140,8 +136,7 @@ public class PostPipeline extends GLBasePipeline {
          */
 
         if (PhotonCamera.getSettings().hdrxNR) {
-            if (nightMode)
-                add(new Wavelet());
+
             add(new ESD3D());
         }
 

@@ -44,35 +44,7 @@ public class IsoExpoSelector {
         double compensation = Math.pow(2.0,PhotonCamera.getSettings().exposureCompensation);
         pair.normalizeiso100();
         pair.ExpoCompensateLower(1.0/compensation);
-        if (PhotonCamera.getSettings().selectedMode == CameraMode.NIGHT)
-        {
-            mpy1 = 7000.0;
-            //if(step%3 == 2) mpy = 1.1;
-            //mpy = mpy*1.5;
-        } else {
-            if(PhotonCamera.getSettings().selectedMode == CameraMode.UNLIMITED){
-                if(step%3 == 2) mpy = 1.5;
-                if(step%3 == 1) mpy = 1.0/1.5;
-            }
-             /*else if(PhotonCamera.getSettings().alignAlgorithm == 1){
-                if(step%3 == 1) {
-                    pair.curlayer = ExpoPair.exposureLayer.High;
-                    mpy = 1.0/1.5;
-                }
-                if(step%3 == 2) {
-                    pair.curlayer = ExpoPair.exposureLayer.Normal;
-                    mpy = 1.0;
-                }
-                if(step%3 == 0) {
-                    pair.curlayer = ExpoPair.exposureLayer.Low;
-                    mpy = 1.5;
-                }
-            }*/
-            mpy1 = 3000.0;
-        }
-        if(PhotonCamera.getSettings().selectedMode == CameraMode.MOTION){
-            mpy1 = 0.0;
-        }
+
         if (pair.exposure < ExposureIndex.sec / 40 && pair.normalizedIso() > 90.0/mpy1) {
             pair.ReduceIso();
         }

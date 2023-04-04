@@ -1,17 +1,22 @@
 package com.particlesdevs.photoncamera.gallery.ui.fragments;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.PointF;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.MimeTypeMap;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -23,11 +28,18 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.particlesdevs.photoncamera.R;
 import com.particlesdevs.photoncamera.databinding.FragmentGalleryImageViewerBinding;
 import com.particlesdevs.photoncamera.gallery.adapters.DepthPageTransformer;
@@ -41,18 +53,27 @@ import com.particlesdevs.photoncamera.gallery.model.GalleryItem;
 import com.particlesdevs.photoncamera.gallery.viewmodel.ExifDialogViewModel;
 import com.particlesdevs.photoncamera.gallery.viewmodel.GalleryViewModel;
 import com.particlesdevs.photoncamera.processing.ImagePath;
-import com.particlesdevs.photoncamera.processing.ImageSaver;
+import com.particlesdevs.photoncamera.util.AwsUtils;
+
 
 import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import io.reactivex.schedulers.Schedulers;
 
-/**
- * Created by Vibhor Srivastava on 02-Dec-2020
- */
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
+
 public class ImageViewerFragment extends Fragment {
     private static final String TAG = ImageViewerFragment.class.getSimpleName();
     private List<GalleryItem> galleryItems;
@@ -65,6 +86,12 @@ public class ImageViewerFragment extends Fragment {
     private FragmentGalleryImageViewerBinding fragmentGalleryImageViewerBinding;
     private boolean isExifVisible;
     private String mode;
+    static TransferUtility transferUtility;
+    // A List of all transfers
+    static List<TransferObserver> observers;
+    static ArrayList<HashMap<String, Object>> transferRecordMaps;
+    // Reference to the utility class
+    static AwsUtils awsUtils;
     private SSIVListener ssivListener = new SSIVListener() {
         @Override
         public void onScaleChanged(float newScale, int origin) {
@@ -91,9 +118,25 @@ public class ImageViewerFragment extends Fragment {
         fragmentGalleryImageViewerBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_gallery_image_viewer, container, false);
         viewModel = new ViewModelProvider(requireActivity()).get(GalleryViewModel.class);
         initialiseDataMembers();
+        getAwsData();
         setClickListeners();
         return fragmentGalleryImageViewerBinding.getRoot();
     }
+
+    private void getAwsData() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        String pool_id = pref.getString("aws_pool_id_config", "");
+        String region_id = pref.getString("aws_region_id_config", "");
+        if (pool_id == "") {
+            Toast.makeText(getContext(), "AWS Configuration Not Found", Toast.LENGTH_SHORT);
+        } else {
+            awsUtils = new AwsUtils();
+            transferUtility = AwsUtils.getTransferUtility(getContext());
+            transferRecordMaps = new ArrayList<>();
+        }
+    }
+
 
     @Override
     public void onDestroy() {
@@ -204,7 +247,7 @@ public class ImageViewerFragment extends Fragment {
     public void onResume() {
         super.onResume();
 //        if (isCompareMode()) {
-            fragmentGalleryImageViewerBinding.setMiniExifVisible(!fragmentGalleryImageViewerBinding.getButtonsVisible());
+        fragmentGalleryImageViewerBinding.setMiniExifVisible(!fragmentGalleryImageViewerBinding.getButtonsVisible());
 //        }
     }
 
@@ -306,12 +349,98 @@ public class ImageViewerFragment extends Fragment {
         String fileName = galleryItem.getFile().getDisplayName();
         String mediaType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(FileUtils.getExtension(fileName));
         Uri uri = galleryItem.getFile().getFileUri();
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_STREAM, uri);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        intent.setType(mediaType);
-        Intent chooser = Intent.createChooser(intent, null);
-        startActivity(chooser);
+        showBottomSheetDialog(uri);
+
+    }
+
+    private void beginUpload(File file) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        String bucketName = pref.getString("aws_bucket_name", "");
+
+        if (bucketName != "") {
+            TransferObserver uploadObserver =
+                    transferUtility.upload(bucketName, file.getName(), file);
+
+            uploadObserver.setTransferListener(new UploadListener(getContext()));
+        } else {
+            Log.d("AWS CONFIG", "Not Found");
+            Toast.makeText(getContext(), "Aws Configuration Not Found!", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+    private File readContentToFile(Uri uri) throws IOException {
+        final File file = new File(getContext().getCacheDir(), getDisplayName(uri));
+        try (
+                final InputStream in = getContext().getContentResolver().openInputStream(uri);
+                final OutputStream out = new FileOutputStream(file, false);
+        ) {
+            byte[] buffer = new byte[1024];
+            for (int len; (len = in.read(buffer)) != -1; ) {
+                out.write(buffer, 0, len);
+            }
+            return file;
+        }
+    }
+
+    private String getDisplayName(Uri uri) {
+        final String[] projection = {MediaStore.Images.Media.DISPLAY_NAME};
+        try (
+                Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
+        ) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+            if (cursor.moveToFirst()) {
+                return cursor.getString(columnIndex);
+            }
+        }
+        // If the display name is not found for any reason, use the Uri path as a fallback.
+        Log.w(TAG, "Couldnt determine DISPLAY_NAME for Uri.  Falling back to Uri path: " + uri.getPath());
+        return uri.getPath();
+    }
+
+    private void showBottomSheetDialog(Uri uri) {
+
+
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
+
+//        LinearLayout copy = bottomSheetDialog.findViewById(R.id.copyLinearLayout);
+        LinearLayout shareAws = bottomSheetDialog.findViewById(R.id.shareLinearLayout);
+        LinearLayout uploadGoogle = bottomSheetDialog.findViewById(R.id.uploadLinearLayout);
+        LinearLayout download = bottomSheetDialog.findViewById(R.id.download);
+//        LinearLayout delete = bottomSheetDialog.findViewById(R.id.delete);
+
+        bottomSheetDialog.show();
+
+
+        shareAws.setOnClickListener(v -> {
+//            Toast.makeText(getContext(), "Amazon S3 is Clicked", Toast.LENGTH_LONG).show();
+            File file = null;
+            try {
+                file = readContentToFile(uri);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            bottomSheetDialog.dismiss();
+            beginUpload(file);
+
+
+        });
+
+        assert uploadGoogle != null;
+        uploadGoogle.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Google Photos is Clicked", Toast.LENGTH_LONG).show();
+            bottomSheetDialog.dismiss();
+        });
+
+        assert download != null;
+        download.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Download is Clicked", Toast.LENGTH_LONG).show();
+            bottomSheetDialog.dismiss();
+        });
+
     }
 
     private void onExifButtonClick(View view) {
@@ -383,6 +512,40 @@ public class ImageViewerFragment extends Fragment {
             indexToDelete = -1;
         } else {
             Toast.makeText(getContext(), "Deletion Failed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+}
+
+class UploadListener implements TransferListener {
+    Context uploadContext;
+
+    public UploadListener(Context context) {
+        uploadContext = context;
+    }
+
+    // Simply updates the UI list when notified.
+    @Override
+    public void onError(int id, Exception e) {
+        Log.e(TAG, "Error during upload: " + id, e);
+        Toast.makeText(uploadContext, "Image Upload Failed."+ e.getMessage(), Toast.LENGTH_LONG).show();
+//        updateList();
+    }
+
+    @Override
+    public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+        Log.d(TAG, String.format("onProgressChanged: %d, total: %d, current: %d",
+                id, bytesTotal, bytesCurrent));
+//        updateList();
+    }
+
+    @Override
+    public void onStateChanged(int id, TransferState newState) {
+        Log.d(TAG, "onStateChanged: " + id + ", " + newState);
+//        updateList();
+        if (newState == TransferState.COMPLETED) {
+            Toast.makeText(uploadContext, "Image Uploaded To S3", Toast.LENGTH_LONG).show();
         }
     }
 }

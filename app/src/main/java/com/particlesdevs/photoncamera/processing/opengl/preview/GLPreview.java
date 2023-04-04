@@ -40,12 +40,9 @@ public class GLPreview extends GLSurfaceView {
     }
 
     public void fireOnSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int w, int h) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (surfaceTextureListener != null)
-                    surfaceTextureListener.onSurfaceTextureAvailable(surfaceTexture, w, h);
-            }
+        handler.post(() -> {
+            if (surfaceTextureListener != null)
+                surfaceTextureListener.onSurfaceTextureAvailable(surfaceTexture, w, h);
         });
 
     }

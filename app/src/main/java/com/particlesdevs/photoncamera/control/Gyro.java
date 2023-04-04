@@ -200,7 +200,5 @@ public class Gyro {
         }
         return output;
     }
-    public boolean getTripod(){
-        return (tripodShakiness < 25) && PhotonCamera.getSettings().selectedMode == CameraMode.NIGHT;
-    }
+
 }

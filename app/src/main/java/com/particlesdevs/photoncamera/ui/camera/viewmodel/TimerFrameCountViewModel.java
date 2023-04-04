@@ -7,6 +7,7 @@ import android.os.Message;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 
+import com.particlesdevs.photoncamera.api.CameraMode;
 import com.particlesdevs.photoncamera.app.PhotonCamera;
 import com.particlesdevs.photoncamera.ui.camera.model.TimerFrameCountModel;
 
@@ -39,13 +40,7 @@ public class TimerFrameCountViewModel extends ViewModel {
 
     public void setFrameTimeCnt(FrameCntTime frameCntTime) {
         Message msg = new Message();
-        switch (PhotonCamera.getSettings().selectedMode) {
-            case NIGHT:
-            case PHOTO:
-            case MOTION:
-                break;
-            case UNLIMITED:
-                frameCntTime.maxframe = 0;
+        if (PhotonCamera.getSettings().selectedMode == CameraMode.PHOTO) {
         }
         msg.obj = frameCntTime;
         changeFrameTimeCnt.sendMessage(msg);

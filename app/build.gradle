@@ -4,12 +4,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'hunter-debug'
 android {
     signingConfigs {
-        debug {
-            storeFile file('../key/PcamLeak.jks')
-            storePassword 'photoncamera'
-            keyPassword 'photoncamera'
-            keyAlias 'key0'
-        }
+
     }
     def versionPropsFile = file('version.properties')
     def versionBuild
@@ -49,10 +44,8 @@ android {
         targetSdkVersion 33
         versionCode versionBuild
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        ndk {
-            abiFilters "arm64-v8a"
-        }
-        versionName '0.85'
+
+        versionName '1.0'
         proguardFiles
     }
 
@@ -92,7 +85,7 @@ android {
     namespace 'com.particlesdevs.photoncamera'
     applicationVariants.all {
         variant -> variant.outputs.all {
-            outputFileName = "PhotonCamera-${versionName}${versionBuild}-${variant.name}.apk"
+            outputFileName = "CameraApp-${versionName}${versionBuild}-${variant.name}.apk"
         }
     }
 }
@@ -130,6 +123,15 @@ dependencies {
     //Use this lib to detect memory leaks when debugging
     //debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
     implementation 'com.quinn.hunter:hunter-debug-library:1.2.0'
+
+
+    // BEGIN AWS DEPENDENCIES
+    def aws_version = "2.16.+"
+    implementation "com.amazonaws:aws-android-sdk-s3:$aws_version"
+    implementation ("com.amazonaws:aws-android-sdk-mobile-client:$aws_version") { transitive = true }
+    // END AWS DEPENDENCIES
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation "io.reactivex.rxjava2:rxjava:2.2.6"
 
 }
 repositories {

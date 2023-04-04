@@ -1,11 +1,18 @@
 package com.particlesdevs.photoncamera.gallery.ui.fragments;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +23,11 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.particlesdevs.photoncamera.R;
@@ -27,12 +38,25 @@ import com.particlesdevs.photoncamera.gallery.files.ImageFile;
 import com.particlesdevs.photoncamera.gallery.helper.Constants;
 import com.particlesdevs.photoncamera.gallery.model.GalleryItem;
 import com.particlesdevs.photoncamera.gallery.viewmodel.GalleryViewModel;
+import com.particlesdevs.photoncamera.util.AwsUtils;
 
 import org.apache.commons.io.FileUtils;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
+
+import io.reactivex.schedulers.Schedulers;
+
+import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
 
 
 public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.GridAdapterCallback {
@@ -44,6 +68,9 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
     private boolean isFABOpen;
     private List<GalleryItem> galleryItems;
     private GalleryViewModel viewModel;
+    static TransferUtility transferUtility;
+    static AwsUtils awsUtils;
+    static ArrayList<HashMap<String, Object>> transferRecordMaps;
 
 
     @Nullable
@@ -62,7 +89,23 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
         recyclerView.setHasFixedSize(true);
         recyclerView.setItemViewCacheSize(10); //trial
         observeAllMediaFiles();
+        getAwsData();
+
         initListeners();
+    }
+
+    private void getAwsData() {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        String pool_id = pref.getString("aws_pool_id_config", "");
+        String region_id = pref.getString("aws_region_id_config", "");
+        if (pool_id == "") {
+            Toast.makeText(getContext(), "AWS Configuration Not Found", Toast.LENGTH_SHORT);
+        } else {
+            awsUtils = new AwsUtils();
+            transferUtility = AwsUtils.getTransferUtility(getContext());
+            transferRecordMaps = new ArrayList<>();
+        }
     }
 
     private void observeAllMediaFiles() {
@@ -72,7 +115,7 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
     private void initImageAdapter(List<GalleryItem> galleryItems) {
         if (galleryItems != null) {
             this.galleryItems = galleryItems;
-            imageGridAdapter = new ImageGridAdapter(this.galleryItems,Constants.GALLERY_ITEM_TYPE_GRID);
+            imageGridAdapter = new ImageGridAdapter(this.galleryItems, Constants.GALLERY_ITEM_TYPE_GRID);
             imageGridAdapter.setHasStableIds(true);
             imageGridAdapter.setGridAdapterCallback(this);
             recyclerView.setAdapter(imageGridAdapter);
@@ -120,11 +163,55 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
 
     private void onShareFabClicked(View view) {
         ArrayList<Uri> imageUris = (ArrayList<Uri>) imageGridAdapter.getSelectedItems().stream().map(galleryItem -> galleryItem.getFile().getFileUri()).collect(Collectors.toList());
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-        shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-        shareIntent.setType("image/*");
-        startActivity(Intent.createChooser(shareIntent, null));
+        closeFABMenu();
+        showBottomSheetDialog(imageUris);
+
+        //        Intent shareIntent = new Intent();
+//        shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
+//        shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
+//        shareIntent.setType("image/*");
+//        startActivity(Intent.createChooser(shareIntent, null));
+
+
+    }
+
+
+    private void showBottomSheetDialog(ArrayList<Uri> imageUris) {
+
+
+        final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
+
+//        LinearLayout copy = bottomSheetDialog.findViewById(R.id.copyLinearLayout);
+        LinearLayout shareAws = bottomSheetDialog.findViewById(R.id.shareLinearLayout);
+        LinearLayout uploadGoogle = bottomSheetDialog.findViewById(R.id.uploadLinearLayout);
+        LinearLayout download = bottomSheetDialog.findViewById(R.id.download);
+//        LinearLayout delete = bottomSheetDialog.findViewById(R.id.delete);
+
+        bottomSheetDialog.show();
+
+
+        shareAws.setOnClickListener(v -> {
+
+            bottomSheetDialog.dismiss();
+
+            uploads(imageUris);
+
+
+        });
+
+        assert uploadGoogle != null;
+        uploadGoogle.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Google Photos is Clicked", Toast.LENGTH_LONG).show();
+            bottomSheetDialog.dismiss();
+        });
+
+        assert download != null;
+        download.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Download is Clicked", Toast.LENGTH_LONG).show();
+            bottomSheetDialog.dismiss();
+        });
+
     }
 
     private void onNumFabClicked(View view) {
@@ -208,4 +295,62 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
                     Snackbar.LENGTH_SHORT).show();
         }
     }
+
+    private File readContentToFile(Uri uri) throws IOException {
+        final File file = new File(getContext().getCacheDir(), getDisplayName(uri));
+        try (
+                final InputStream in = getContext().getContentResolver().openInputStream(uri);
+                final OutputStream out = new FileOutputStream(file, false);
+        ) {
+            byte[] buffer = new byte[1024];
+            for (int len; (len = in.read(buffer)) != -1; ) {
+                out.write(buffer, 0, len);
+            }
+            return file;
+        }
+    }
+
+    private String getDisplayName(Uri uri) {
+        final String[] projection = {MediaStore.Images.Media.DISPLAY_NAME};
+        try (
+                Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
+        ) {
+            int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+            if (cursor.moveToFirst()) {
+                return cursor.getString(columnIndex);
+            }
+        }
+        // If the display name is not found for any reason, use the Uri path as a fallback.
+        Log.w(TAG, "Couldnt determine DISPLAY_NAME for Uri.  Falling back to Uri path: " + uri.getPath());
+        return uri.getPath();
+    }
+
+    @SuppressLint("CheckResult")
+    public void uploads(ArrayList<Uri> uri) {
+        Toast.makeText(getContext(), "Upload Started", Toast.LENGTH_SHORT).show();
+        Map<String, File> map = uri.stream().collect(Collectors.toMap(e -> new File(e.getPath()).getName(), e -> {
+            File file = null;
+
+            try {
+                file = readContentToFile(e);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            return file;
+        }));
+        Objects.requireNonNull(new MultiUploaderS3().uploadMultiple(map, requireContext()))
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(
+                        () ->
+                                runOnUiThread(() -> Toast.makeText(getContext(), "Upload Completed", Toast.LENGTH_LONG).show())
+                        , throwable -> runOnUiThread(() -> Toast.makeText(getContext(), "Upload Failed!", Toast.LENGTH_LONG).show())
+
+                );
+    }
+
 }
+
+
+

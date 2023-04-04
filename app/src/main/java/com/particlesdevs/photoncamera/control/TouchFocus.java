@@ -65,7 +65,7 @@ public class TouchFocus {
     }
 
     private void setInitialAFAE() {
-        captureController.reset3Aparams();
+//        captureController.reset3Aparams();
     }
 
     private void setFocus(int x, int y) {

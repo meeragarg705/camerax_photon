@@ -188,6 +188,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
     public CameraFragmentViewModel getCameraFragmentViewModel() {
         return cameraFragmentViewModel;
     }
+
     @HunterDebug
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -200,6 +201,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         supportedDevice = Objects.requireNonNull(PhotonCamera.getInstance(activity)).getSupportedDevice();
         supportedDevice.loadCheck();
     }
+
     @HunterDebug
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -211,6 +213,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         setModelsToLayout();
         return cameraFragmentBinding.getRoot();
     }
+
     private void initMembers() {
         //create the viewmodel which updates the model
         cameraFragmentViewModel = new ViewModelProvider(this).get(CameraFragmentViewModel.class);
@@ -238,6 +241,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         // associating AuxButtonsModel with layout
         cameraFragmentBinding.setAuxmodel(auxButtonsViewModel.getAuxButtonsModel());
     }
+
     @HunterDebug
     @Override
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
@@ -258,7 +262,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         settingsBarEntryProvider.addEntries(cameraFragmentBinding.settingsBar);
     }
 
-    private void updateSettingsBar(){
+    private void updateSettingsBar() {
         settingsBarEntryProvider.updateAllEntries();
         settingsBarEntryProvider.addEntries(cameraFragmentBinding.settingsBar);
         this.mCameraUIView.refresh(CaptureController.isProcessing);
@@ -293,6 +297,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
     @HunterDebug
     @Override
     public void onResume() {
@@ -304,7 +309,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             PhotonCamera.getGyro().register();
             PhotonCamera.getGravity().register();
             burstPlayer = MediaPlayer.create(activity, R.raw.sound_burst2);
-            endPlayer = MediaPlayer.create(activity,R.raw.sound_end);
+            endPlayer = MediaPlayer.create(activity, R.raw.sound_end);
             cameraFragmentViewModel.updateGalleryThumb(null);
         });
         cameraFragmentViewModel.onResume();
@@ -319,7 +324,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         if (cameraFragmentBinding != null && captureController != null) {
             View focusCircle = cameraFragmentBinding.layoutViewfinder.touchFocus;
             textureView.post(() -> {
-                mTouchFocus = new TouchFocus(captureController,focusCircle,textureView);
+                mTouchFocus = new TouchFocus(captureController, focusCircle, textureView);
             });
         }
     }
@@ -401,7 +406,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
 //            stringMap.put("ISO_CR", String.valueOf(result.get(CaptureResult.SENSOR_SENSITIVITY)));
                 stringMap.put("Shakiness", String.valueOf(PhotonCamera.getGyro().getShakiness()));
                 stringMap.put("TripodShakiness", String.valueOf(PhotonCamera.getGyro().tripodShakiness));
-                stringMap.put("Tripod", String.valueOf(PhotonCamera.getGyro().getTripod()));
+
                 stringMap.put("FrameNumber", String.valueOf(result.getFrameNumber()));
                 float[] temp = new float[3];
                 temp[0] = captureController.mPreviewTemp[0].floatValue();
@@ -427,7 +432,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
                     surfaceView.setAERect(null);
                 }
                 surfaceView.setDebugText(Logger.createTextFrom(stringMap));
-                surfaceView.refresh();
+//                surfaceView.refresh();
             } else {
                 if (surfaceView.isCanvasDrawn) {
                     surfaceView.clear();
@@ -444,17 +449,17 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         float height = (((float) meteringRectangle.getWidth() / captureController.mImageReaderPreview.getWidth()) * (textureView.getHeight()));
         //left = textureView.getWidth() - left;
         return new RectF(
-                //meteringRectangle.getY()-left, //Left
-                textureView.getWidth()-left-width,//Right
+
+                textureView.getWidth() - left - width,//Right
                 top,  //Top
-                //meteringRectangle.getY() - (left + width),//Right
-                textureView.getWidth()-left,
+
+                textureView.getWidth() - left,
                 top + height //Bottom
         );
     }
 
     private String getResultFieldName(String prefix, Integer value) {
-        if(value == null) return "";
+        if (value == null) return "";
         for (Field f : this.metadataFields)
             if (f.getName().startsWith(prefix)) {
                 try {
@@ -703,10 +708,11 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         }
 
         private long prevPlayTime = 0;
+
         @Override
         public void onFrameCaptureStarted(Object o) {
             long seekDelay = 50;
-            if(prevPlayTime + seekDelay < System.currentTimeMillis()){
+            if (prevPlayTime + seekDelay < System.currentTimeMillis()) {
                 prevPlayTime = System.currentTimeMillis();
                 burstPlayer.seekTo(0);
             }
@@ -715,6 +721,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         @Override
         public void onBurstPrepared(Object o) {
         }
+
         @Override
         public void onFrameCaptureProgressed(Object o) {
         }
@@ -850,53 +857,16 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
 
         private void reConfigureModeViews(CameraMode mode) {
             Log.d(TAG, "Current Mode:" + mode.name());
-            switch (mode) {
-                case VIDEO:
-                    this.topbar.setEisVisible(true);
-                    //cameraFragmentBinding.textureHolder.setBackgroundResource(R.drawable.gradient_vector_video);
-                    this.topbar.setFpsVisible(true);
-                    this.topbar.setTimerVisible(false);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.fps_entry_layout, View.VISIBLE);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.timer_entry_layout, View.GONE);
-                    this.mShutterButton.setBackgroundResource(R.drawable.unlimitedbutton);
-                    cameraFragmentBinding.layoutBottombar.layoutBottombar.setBackgroundResource(R.color.panel_transparency);
-                    cameraFragmentBinding.getRoot().setBackgroundResource(android.R.color.black);
-                    break;
-                case UNLIMITED:
-                    this.topbar.setFpsVisible(true);
-                    this.topbar.setTimerVisible(false);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.fps_entry_layout, View.VISIBLE);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.timer_entry_layout, View.GONE);
-                    this.mShutterButton.setBackgroundResource(R.drawable.unlimitedbutton);
-                    cameraFragmentBinding.layoutBottombar.layoutBottombar.setBackground(null);
-                    cameraFragmentBinding.getRoot().setBackground(Utilities.resolveDrawable(requireActivity(),R.attr.cameraFragmentBackground));
-                    break;
-                case PHOTO:
-                case MOTION:
-                default:
-                    this.topbar.setEisVisible(true);
-                    this.topbar.setFpsVisible(true);
-                    this.topbar.setTimerVisible(true);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.eis_entry_layout, View.VISIBLE);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.fps_entry_layout, View.VISIBLE);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.timer_entry_layout, View.VISIBLE);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.hdrx_entry_layout, View.GONE);
-                    this.mShutterButton.setBackgroundResource(R.drawable.roundbutton);
-                    cameraFragmentBinding.layoutBottombar.layoutBottombar.setBackground(null);
-                    cameraFragmentBinding.getRoot().setBackground(Utilities.resolveDrawable(requireActivity(),R.attr.cameraFragmentBackground));
-                    break;
-                case NIGHT:
-                    this.topbar.setEisVisible(false);
-                    this.topbar.setFpsVisible(true);
-                    this.topbar.setTimerVisible(true);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.eis_entry_layout, View.GONE);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.fps_entry_layout, View.GONE);
-                    cameraFragmentBinding.settingsBar.setChildVisibility(R.id.timer_entry_layout, View.VISIBLE);
-                    this.mShutterButton.setBackgroundResource(R.drawable.roundbutton);
-                    cameraFragmentBinding.layoutBottombar.layoutBottombar.setBackground(null);
-                    cameraFragmentBinding.getRoot().setBackground(Utilities.resolveDrawable(requireActivity(),R.attr.cameraFragmentBackground));
-                    break;
-            }
+            this.topbar.setEisVisible(true);
+            this.topbar.setFpsVisible(true);
+            this.topbar.setTimerVisible(true);
+            cameraFragmentBinding.settingsBar.setChildVisibility(R.id.eis_entry_layout, View.VISIBLE);
+            cameraFragmentBinding.settingsBar.setChildVisibility(R.id.fps_entry_layout, View.VISIBLE);
+            cameraFragmentBinding.settingsBar.setChildVisibility(R.id.timer_entry_layout, View.VISIBLE);
+            cameraFragmentBinding.settingsBar.setChildVisibility(R.id.hdrx_entry_layout, View.GONE);
+            this.mShutterButton.setBackgroundResource(R.drawable.roundbutton);
+            cameraFragmentBinding.layoutBottombar.layoutBottombar.setBackground(null);
+            cameraFragmentBinding.getRoot().setBackground(Utilities.resolveDrawable(requireActivity(), R.attr.cameraFragmentBackground));
             toggleConstraints(mode);
         }
 
@@ -907,25 +877,18 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
                                 .textureHolder
                                 .findViewById(R.id.camera_container)
                                 .getLayoutParams();
-                switch (mode){
-                    case VIDEO:
-                        camera_containerLP.topToTop = R.id.textureHolder;
-                        camera_containerLP.topToBottom = -1;
-                        break;
-                    case UNLIMITED:
-                    case PHOTO:
-                    case MOTION:
-                    case NIGHT:
-                        camera_containerLP.topToTop = -1;
-                        camera_containerLP.topToBottom = R.id.layout_topbar;
+                if (mode == CameraMode.PHOTO) {
+                    camera_containerLP.topToTop = -1;
+                    camera_containerLP.topToBottom = R.id.layout_topbar;
                 }
 
             }
         }
+
         @Override
         public void refresh(boolean processing) {
-            cameraFragmentBinding.invalidateAll();
-            this.reConfigureModeViews(CameraMode.valueOf(PreferenceKeys.getCameraModeOrdinal()));
+//            cameraFragmentBinding.invalidateAll();
+//            this.reConfigureModeViews(CameraMode.valueOf(PreferenceKeys.getCameraModeOrdinal()));
             this.resetCaptureProgressBar();
             if (!processing) {
                 this.activateShutterButton(true);
@@ -1000,29 +963,11 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
                     shutterButton = view;
                     switch (PhotonCamera.getSettings().selectedMode) {
                         case PHOTO:
-                        case MOTION:
-                        case NIGHT:
+
                             if (view.isHovered()) resetTimer();
                             else startTimer();
                             break;
-                        case UNLIMITED:
-                            if (!captureController.onUnlimited) {
-                                captureController.callUnlimitedStart();
-                                view.setActivated(false);
-                            } else {
-                                captureController.callUnlimitedEnd();
-                                view.setActivated(true);
-                            }
-                            break;
-                        case VIDEO:
-                            if (!captureController.mIsRecordingVideo) {
-                                captureController.VideoStart();
-                                view.setActivated(false);
-                            } else {
-                                captureController.VideoEnd();
-                                view.setActivated(true);
-                            }
-                            break;
+
                     }
                     break;
                 case R.id.settings_button:
@@ -1119,24 +1064,14 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
 
         }
 
-        private void setID(String input){
+        private void setID(String input) {
             PreferenceKeys.setCameraID(String.valueOf(input));
         }
+
         @Override
         public void onCameraModeChanged(CameraMode cameraMode) {
             PreferenceKeys.setCameraModeOrdinal(cameraMode.ordinal());
             Log.d(TAG, "onCameraModeChanged() called with: cameraMode = [" + cameraMode + "]");
-            switch (cameraMode) {
-                case PHOTO:
-                case MOTION:
-                case NIGHT:
-                case UNLIMITED:
-                default:
-                    break;
-                case VIDEO:
-                    PreferenceKeys.setCameraModeOrdinal(CameraMode.VIDEO.ordinal());
-                    break;
-            }
             this.restartCamera();
         }
 

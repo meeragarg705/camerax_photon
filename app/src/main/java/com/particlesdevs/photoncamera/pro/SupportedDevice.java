@@ -65,7 +65,7 @@ public class SupportedDevice {
         if (mSupportedDevicesSet.contains(THIS_DEVICE)) {
             PhotonCamera.showToastFast(R.string.device_support);
         } else {
-            PhotonCamera.showToastFast(R.string.device_unsupport);
+//            PhotonCamera.showToastFast(R.string.device_unsupport);
         }
     }
 

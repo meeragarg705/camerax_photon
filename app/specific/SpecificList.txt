@@ -14,3 +14,4 @@ oneplus:oneplus7pro
 oneplus:oneplus7pronr
 samsung:p3s
 samsung:r0q
+samsung:m31
