@@ -8,9 +8,7 @@ import androidx.appcompat.widget.AppCompatButton;
 import com.particlesdevs.photoncamera.R;
 import com.particlesdevs.photoncamera.settings.PreferenceKeys;
 
-/**
- * Created by Vibhor on 19-Jan-2021
- */
+
 public class TimerButton extends AppCompatButton {
     private static final int[] STATE_TIMER_3S = {R.attr.timer_3s};
     private static final int[] STATE_TIMER_10S = {R.attr.timer_10s};

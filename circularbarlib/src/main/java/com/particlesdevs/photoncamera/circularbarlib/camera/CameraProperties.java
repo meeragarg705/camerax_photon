@@ -4,9 +4,7 @@ import android.hardware.camera2.CameraCharacteristics;
 import android.util.Log;
 import android.util.Range;
 
-/**
- * Created by vibhorSrv
- */
+
 public class CameraProperties {
     private static final String TAG = CameraProperties.class.getSimpleName();
     private final Float maxFocal;

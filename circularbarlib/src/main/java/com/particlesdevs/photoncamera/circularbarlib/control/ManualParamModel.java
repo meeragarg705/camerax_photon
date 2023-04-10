@@ -2,11 +2,7 @@ package com.particlesdevs.photoncamera.circularbarlib.control;
 
 import java.util.Observable;
 
-/**
- * Observable data class which stores the manual shutter, focus, iso and ev values
- * <p>
- * Created by Vibhor Srivastava 29/Jan/2021
- */
+
 public class ManualParamModel extends Observable {
     public static final double EXPOSURE_AUTO = 0;
     public static final double EV_AUTO = 0;

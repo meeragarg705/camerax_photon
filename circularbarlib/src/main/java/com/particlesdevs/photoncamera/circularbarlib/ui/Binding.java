@@ -8,9 +8,7 @@ import com.particlesdevs.photoncamera.circularbarlib.control.models.ManualModel;
 import com.particlesdevs.photoncamera.circularbarlib.ui.views.knobview.KnobView;
 import com.particlesdevs.photoncamera.circularbarlib.ui.views.knobview.Rotation;
 
-/**
- * Created by vibhorSrv
- */
+
 public class Binding {
     public static void setKnobVisibility(KnobView knobView, Boolean knobVisible) {
         if (knobView != null && knobVisible != null) {

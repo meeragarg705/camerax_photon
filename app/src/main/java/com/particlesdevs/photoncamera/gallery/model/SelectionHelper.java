@@ -4,11 +4,7 @@ import android.widget.Checkable;
 
 import java.util.ArrayList;
 
-/**
- * Created by Vibhor Srivastava on October 14 2021
- *
- * @param <T> Checkable item
- */
+
 public class SelectionHelper<T extends Checkable> {
     private final ArrayList<T> selectedItems = new ArrayList<>();
     private boolean selectionStarted;

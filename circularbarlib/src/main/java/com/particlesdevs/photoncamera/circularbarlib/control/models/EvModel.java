@@ -17,9 +17,7 @@ import com.particlesdevs.photoncamera.circularbarlib.ui.views.knobview.ShadowTex
 import java.util.ArrayList;
 import java.util.Locale;
 
-/**
- * Created by killerink, vibhorSrv, eszdman
- */
+
 public class EvModel extends ManualModel<Float> {
 
     private final String TAG = EvModel.class.getSimpleName();

@@ -7,9 +7,7 @@ import androidx.databinding.Bindable;
 
 import com.particlesdevs.photoncamera.BR;
 
-/**
- * Class that holds the ui state, for now the orientation
- */
+
 public class CameraFragmentModel extends BaseObservable {
     private int orientation;
     private int duration;

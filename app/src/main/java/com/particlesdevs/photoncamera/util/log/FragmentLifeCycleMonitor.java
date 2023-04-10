@@ -12,9 +12,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.particlesdevs.photoncamera.app.PhotonCamera;
 
-/**
- * Added by vibhorSrv on 17/09/2020
- */
+
 public class FragmentLifeCycleMonitor extends FragmentManager.FragmentLifecycleCallbacks {
     private static final String TAG = "FragmentMonitor";
 
@@ -25,7 +23,7 @@ public class FragmentLifeCycleMonitor extends FragmentManager.FragmentLifecycleC
 
     String getNameOf(Object obj) {
         return "[" + obj.getClass().getSimpleName() + "]";
-//        return "[" + obj.getClass().getSimpleName() + '@' + Integer.toHexString(obj.hashCode()) + "]";
+
     }
 
     @Override

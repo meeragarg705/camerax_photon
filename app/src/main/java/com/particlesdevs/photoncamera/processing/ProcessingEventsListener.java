@@ -2,9 +2,7 @@ package com.particlesdevs.photoncamera.processing;
 
 import java.nio.file.Path;
 
-/**
- * Interface that listens to events related to processing of image after it has been captured
- */
+
 public interface ProcessingEventsListener {
     String FAILED_MSG = "Image Processing/Saving Failed!";
 

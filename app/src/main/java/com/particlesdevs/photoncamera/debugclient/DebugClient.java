@@ -177,7 +177,7 @@ public class DebugClient {
                     keysStr.append(key.getName());
                     keysStr.append("\n");
                 }
-                mBufferOut.println(keysStr.toString());
+                mBufferOut.println(keysStr);
                 return;
             }
             case "CAPTURE_KEYS":{
@@ -186,7 +186,7 @@ public class DebugClient {
                     keysStr.append(key.getName());
                     keysStr.append("\n");
                 }
-                mBufferOut.println(keysStr.toString());
+                mBufferOut.println(keysStr);
                 return;
             }
             case "BUILDER_CREATE":{
@@ -226,7 +226,7 @@ public class DebugClient {
                     keysStr.append(key.getName());
                     keysStr.append(" ");
                 }
-                mBufferOut.println(keysStr.toString());
+                mBufferOut.println(keysStr);
                 return;
             }
             case "PREVIEW_REQUEST_KEYS":{
@@ -235,7 +235,7 @@ public class DebugClient {
                     keysStr.append(key.getName());
                     keysStr.append(" ");
                 }
-                mBufferOut.println(keysStr.toString());
+                mBufferOut.println(keysStr);
                 return;
             }
             case "PREVIEW_REQUEST_KEYS_PRINT":{
@@ -246,7 +246,7 @@ public class DebugClient {
                     keysStr.append(getObjectString(CaptureController.mPreviewCaptureRequest.get(key)));
                     keysStr.append(" ");
                 }
-                mBufferOut.println(keysStr.toString());
+                mBufferOut.println(keysStr);
                 return;
             }
             case "PREVIEW_KEYS_PRINT":{
@@ -257,7 +257,7 @@ public class DebugClient {
                     keysStr.append(previewKeyValue(key));
                     keysStr.append(" ");
                 }
-                mBufferOut.println(keysStr.toString());
+                mBufferOut.println(keysStr);
                 return;
             }
             case "DEBUG_SHOT":{

@@ -6,10 +6,7 @@ import androidx.databinding.library.baseAdapters.BR;
 
 import com.particlesdevs.photoncamera.gallery.views.Histogram;
 
-/**
- * A simple data class which stores the exif data to be displayed in the exif dialog in the {@link com.particlesdevs.photoncamera.gallery.ui.GalleryActivity}
- * Currently this data model class is directly bound to {@link com.particlesdevs.photoncamera.R.layout#exif_dialog} through DataBinding library
- */
+
 public class ExifDialogModel extends BaseObservable {
     private String title;
     private String res;

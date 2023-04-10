@@ -4,11 +4,7 @@ import android.graphics.PointF;
 
 import java.util.Observable;
 
-/**
- * Simple observable class that stores current zoom and pan state
- * <p>
- * Created by Vibhor Srivastava 18 Jan 2021
- */
+
 public class ScaleAndPan extends Observable {
     private float scale;
     private PointF center;

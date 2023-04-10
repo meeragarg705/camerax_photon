@@ -1,18 +1,4 @@
-/*
- * Copyright (C) 2013 The Android Open Source Project
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package com.particlesdevs.photoncamera.settings;
 
 import android.content.Context;
@@ -28,52 +14,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/**
- * SettingsManager class provides an api for getting and setting SharedPreferences
- * values.
- * <p>
- * Types
- * <p>
- * This API simplifies settings type management by storing all settings values
- * in SharedPreferences as Strings.  To do this, the API to converts boolean and
- * Integer values to Strings when those values are stored, making the conversion
- * back to a boolean or Integer also consistent and simple.
- * <p>
- * This also enables the user to safely get settings values as three different types,
- * as it's convenient: String, Integer, and boolean values.  Integers and boolean
- * can always be trivially converted to one another, but Strings cannot always be
- * parsed as Integers.  In this case, if the user stores a String value that cannot
- * be parsed to an Integer yet they try to retrieve it as an Integer, the API throws
- * a meaningful exception to the user.
- * <p>
- * Scope
- * <p>
- * This API introduces the concept of "scope" for a setting, which is the generality
- * of a setting.  The most general settings, that can be accessed acrossed the
- * entire application, have a scope of SCOPE_GLOBAL.  They are stored in the default
- * SharedPreferences file.
- * <p>
- * A setting that is local to a third party module or subset of the application has
- * a custom scope.  The specific module can define whatever scope (String) argument
- * they want, and the settings saved with that scope can only be seen by that third
- * party module.  Scope is a general concept that helps protect settings values
- * from being clobbered in different contexts.
- * <p>
- * Keys and Defaults
- * <p>
- * This API allows you to store your SharedPreferences keys and default values
- * outside the SettingsManager, because these values are either passed into
- * the API or stored in a cache when the user sets defaults.
- * <p>
- * For any setting, it is optional to store a default or set of possible values,
- * unless you plan on using the getIndexOfCurrentValue and setValueByIndex,
- * methods, which rely on an index into the set of possible values.
- */
+
 public class SettingsManager {
-    /**
-     * This scope stores and retrieves settings from
-     * default preferences.
-     */
+
     public static final String SCOPE_GLOBAL = "default_scope";
     private static final String TAG = "SettingsManager";
     private final Context mContext;

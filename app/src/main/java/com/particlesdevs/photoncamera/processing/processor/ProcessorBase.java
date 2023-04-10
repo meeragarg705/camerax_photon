@@ -29,9 +29,7 @@ import com.particlesdevs.photoncamera.processing.ProcessingEventsListener;
 
 import java.nio.file.Path;
 
-/**
- * Created by Vibhor Srivastava on 02/Jan/2021
- */
+
 public abstract class ProcessorBase {
     public static float FAKE_WL = 65535.f;
     protected final ProcessingEventsListener processingEventsListener;

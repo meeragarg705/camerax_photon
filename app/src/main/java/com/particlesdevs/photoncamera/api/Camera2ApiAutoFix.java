@@ -1,5 +1,16 @@
 package com.particlesdevs.photoncamera.api;
 
+import static android.hardware.camera2.CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE;
+import static android.hardware.camera2.CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION;
+import static android.hardware.camera2.CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE;
+import static android.hardware.camera2.CameraCharacteristics.TONEMAP_MAX_CURVE_POINTS;
+import static android.hardware.camera2.CameraMetadata.LENS_OPTICAL_STABILIZATION_MODE_ON;
+import static android.hardware.camera2.CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE;
+import static android.hardware.camera2.CaptureResult.COLOR_CORRECTION_GAINS;
+import static android.hardware.camera2.CaptureResult.COLOR_CORRECTION_TRANSFORM;
+import static android.hardware.camera2.CaptureResult.SENSOR_DYNAMIC_BLACK_LEVEL;
+import static android.hardware.camera2.CaptureResult.SENSOR_NEUTRAL_COLOR_POINT;
+
 import android.annotation.SuppressLint;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CaptureRequest;
@@ -16,34 +27,6 @@ import com.particlesdevs.photoncamera.processing.opengl.GLDrawParams;
 import com.particlesdevs.photoncamera.processing.parameters.ExposureIndex;
 
 import java.lang.reflect.Field;
-
-import static android.hardware.camera2.CameraCharacteristics.CONTROL_AE_COMPENSATION_RANGE;
-import static android.hardware.camera2.CameraCharacteristics.LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION;
-import static android.hardware.camera2.CameraCharacteristics.SENSOR_INFO_EXPOSURE_TIME_RANGE;
-import static android.hardware.camera2.CameraCharacteristics.TONEMAP_AVAILABLE_TONE_MAP_MODES;
-import static android.hardware.camera2.CameraCharacteristics.TONEMAP_MAX_CURVE_POINTS;
-import static android.hardware.camera2.CameraMetadata.CONTROL_SCENE_MODE_DISABLED;
-import static android.hardware.camera2.CameraMetadata.CONTROL_SCENE_MODE_HDR;
-import static android.hardware.camera2.CameraMetadata.HOT_PIXEL_MODE_FAST;
-import static android.hardware.camera2.CameraMetadata.HOT_PIXEL_MODE_HIGH_QUALITY;
-import static android.hardware.camera2.CameraMetadata.LENS_OPTICAL_STABILIZATION_MODE_ON;
-import static android.hardware.camera2.CameraMetadata.SHADING_MODE_FAST;
-import static android.hardware.camera2.CameraMetadata.STATISTICS_LENS_SHADING_MAP_MODE_ON;
-import static android.hardware.camera2.CameraMetadata.TONEMAP_MODE_GAMMA_VALUE;
-import static android.hardware.camera2.CameraMetadata.TONEMAP_MODE_HIGH_QUALITY;
-import static android.hardware.camera2.CameraMetadata.TONEMAP_MODE_PRESET_CURVE;
-import static android.hardware.camera2.CaptureRequest.CONTROL_SCENE_MODE;
-import static android.hardware.camera2.CaptureRequest.HOT_PIXEL_MODE;
-import static android.hardware.camera2.CaptureRequest.LENS_OPTICAL_STABILIZATION_MODE;
-import static android.hardware.camera2.CaptureRequest.STATISTICS_HOT_PIXEL_MAP_MODE;
-import static android.hardware.camera2.CaptureRequest.STATISTICS_LENS_SHADING_MAP_MODE;
-import static android.hardware.camera2.CaptureRequest.TONEMAP_MODE;
-import static android.hardware.camera2.CaptureResult.COLOR_CORRECTION_GAINS;
-import static android.hardware.camera2.CaptureResult.COLOR_CORRECTION_TRANSFORM;
-import static android.hardware.camera2.CaptureResult.SENSOR_DYNAMIC_BLACK_LEVEL;
-import static android.hardware.camera2.CaptureResult.SENSOR_NEUTRAL_COLOR_POINT;
-import static android.hardware.camera2.CaptureResult.SHADING_MODE;
-import static android.hardware.camera2.CaptureResult.TONEMAP_CURVE;
 
 @SuppressWarnings("ALL")
 public class Camera2ApiAutoFix {
@@ -71,25 +54,18 @@ public class Camera2ApiAutoFix {
         fix.MaxRegionsAF();
     }
 
-    //private static double oldWL = -1.0;
+
     public static void ApplyRes(CaptureResult captureResult) {
         Camera2ApiAutoFix fix = new Camera2ApiAutoFix(captureResult);
         //fix.gains();
         fix.BL();
         fix.whitePoint();
         fix.CCM();
-        /*Camera2ApiAutoFix.WhiteLevel(CameraFragment.mCaptureResult, (int)oldWL);
-        Camera2ApiAutoFix.BlackLevel(CameraFragment.mCaptureResult, PhotonCamera.getParameters().blackLevel, 1.f);
-        oldWL = -1.0;*/
+
     }
 
     public static void ApplyBurst() {
-        /*if(oldWL == -1.0) {
-            PhotonCamera.getParameters().FillParameters(null,CameraFragment.mCameraCharacteristics,null);
-            Camera2ApiAutoFix.WhiteLevel(null, 65535);
-            Camera2ApiAutoFix.BlackLevel(null, PhotonCamera.getParameters().blackLevel, (float) (65535) / PhotonCamera.getParameters().whiteLevel);
-            oldWL = PhotonCamera.getParameters().whiteLevel;
-        }*/
+
     }
 
     private void whitePoint() {
@@ -204,7 +180,7 @@ public class Camera2ApiAutoFix {
     }
 
     private void MaxRegionsAF() {
-        //CameraReflectionApi.set(CONTROL_MAX_REGIONS_AF,5);
+
     }
 
     public void gains() {
@@ -261,15 +237,13 @@ public class Camera2ApiAutoFix {
 
     public static void applyPrev(CaptureRequest.Builder captureBuilder) {
         Camera2ApiAutoFix.Apply();
-//        captureBuilder.set(CONTROL_AE_MODE, CONTROL_AE_MODE_ON);
-        //captureBuilder.set(COLOR_CORRECTION_MODE,COLOR_CORRECTION_MODE_HIGH_QUALITY);
+
         int[] stabilizationModes = CaptureController.mCameraCharacteristics.get(LENS_INFO_AVAILABLE_OPTICAL_STABILIZATION);
         if (stabilizationModes != null && stabilizationModes.length > 1) {
             Log.d(TAG, "LENS_OPTICAL_STABILIZATION_MODE");
-//            captureBuilder.set(LENS_OPTICAL_STABILIZATION_MODE, LENS_OPTICAL_STABILIZATION_MODE_OFF);//Fix ois bugs for preview and burst
-            captureBuilder.set(LENS_OPTICAL_STABILIZATION_MODE, LENS_OPTICAL_STABILIZATION_MODE_ON);//Fix ois bugs for preview and burst
+
+            captureBuilder.set(LENS_OPTICAL_STABILIZATION_MODE, LENS_OPTICAL_STABILIZATION_MODE_ON);
         }
-        //captureBuilder.set(CONTROL_AE_EXPOSURE_COMPENSATION,-1);
         Range<Integer> range = CaptureController.mCameraCharacteristics.get(CONTROL_AE_COMPENSATION_RANGE);
     }
 }

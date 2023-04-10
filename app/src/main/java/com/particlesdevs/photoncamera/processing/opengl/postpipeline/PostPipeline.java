@@ -4,7 +4,6 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.util.Log;
 
-import com.particlesdevs.photoncamera.api.CameraMode;
 import com.particlesdevs.photoncamera.app.PhotonCamera;
 import com.particlesdevs.photoncamera.processing.ImageFrame;
 import com.particlesdevs.photoncamera.processing.opengl.GLBasePipeline;
@@ -140,7 +139,7 @@ public class PostPipeline extends GLBasePipeline {
             add(new ESD3D());
         }
 
-        //add(new AWB());
+
 
         add(new Initial());
 

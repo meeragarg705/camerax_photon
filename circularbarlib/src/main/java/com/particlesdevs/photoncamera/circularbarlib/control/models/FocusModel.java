@@ -17,9 +17,7 @@ import com.particlesdevs.photoncamera.circularbarlib.ui.views.knobview.ShadowTex
 import java.util.ArrayList;
 import java.util.Locale;
 
-/**
- * Created by killerink, vibhorSrv, eszdman
- */
+
 public class FocusModel extends ManualModel<Float> {
 
     public FocusModel(Context context, CameraCharacteristics cameraCharacteristics, Range<Float> range,

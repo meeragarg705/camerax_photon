@@ -1,5 +1,11 @@
 package com.particlesdevs.photoncamera.gallery.ui.fragments;
 
+import static com.particlesdevs.photoncamera.gallery.helper.Constants.COMPARE;
+import static com.particlesdevs.photoncamera.gallery.helper.Constants.IMAGE1_KEY;
+import static com.particlesdevs.photoncamera.gallery.helper.Constants.IMAGE2_KEY;
+import static com.particlesdevs.photoncamera.gallery.helper.Constants.IMAGE_POSITION_KEY;
+import static com.particlesdevs.photoncamera.gallery.helper.Constants.MODE_KEY;
+
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
@@ -7,19 +13,24 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.PointF;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
 import android.os.Process;
-import android.os.*;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
 import com.particlesdevs.photoncamera.R;
 import com.particlesdevs.photoncamera.databinding.FragmentGalleryImageCompareBinding;
@@ -33,11 +44,7 @@ import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Observable;
 
-import static com.particlesdevs.photoncamera.gallery.helper.Constants.*;
 
-/**
- * Created by Vibhor Srivastava on 09-Jan-2021
- */
 public class ImageCompareFragment extends Fragment {
     private static boolean toSync = true;
     private final SSIVListenerImpl ssivListener = new SSIVListenerImpl();

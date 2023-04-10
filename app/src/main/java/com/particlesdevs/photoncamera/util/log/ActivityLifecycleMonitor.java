@@ -10,9 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.particlesdevs.photoncamera.app.PhotonCamera;
 
-/**
- * Added by vibhorSrv on 16/09/2020
- */
+
 public class ActivityLifecycleMonitor implements Application.ActivityLifecycleCallbacks {
     private static final String TAG = "ActivityMonitor";
 

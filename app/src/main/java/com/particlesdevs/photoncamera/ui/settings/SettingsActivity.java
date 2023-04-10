@@ -1,5 +1,8 @@
 package com.particlesdevs.photoncamera.ui.settings;
 
+import static com.particlesdevs.photoncamera.settings.PreferenceKeys.Key.ALL_DEVICES_NAMES_KEY;
+import static com.particlesdevs.photoncamera.settings.PreferenceKeys.SCOPE_GLOBAL;
+
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -42,9 +45,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.TimeZone;
-
-import static com.particlesdevs.photoncamera.settings.PreferenceKeys.Key.ALL_DEVICES_NAMES_KEY;
-import static com.particlesdevs.photoncamera.settings.PreferenceKeys.SCOPE_GLOBAL;
 
 public class SettingsActivity extends BaseActivity implements PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
     public static boolean toRestartApp;
@@ -164,7 +164,7 @@ public class SettingsActivity extends BaseActivity implements PreferenceFragment
                 Preference myPref = findPreference(PreferenceKeys.Key.KEY_TELEGRAM.mValue);
                 if (myPref != null)
                     myPref.setOnPreferenceClickListener(preference -> {
-                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/photon_camera_channel"));
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("#"));
                         startActivity(browserIntent);
                         return true;
                     });
@@ -176,7 +176,7 @@ public class SettingsActivity extends BaseActivity implements PreferenceFragment
             Preference github = findPreference(PreferenceKeys.Key.KEY_CONTRIBUTORS.mValue);
             if (github != null)
                 github.setOnPreferenceClickListener(preference -> {
-                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/eszdman/PhotonCamera"));
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("#"));
                     startActivity(browserIntent);
                     return true;
                 });

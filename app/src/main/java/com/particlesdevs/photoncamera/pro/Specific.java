@@ -1,5 +1,8 @@
 package com.particlesdevs.photoncamera.pro;
 
+import static com.particlesdevs.photoncamera.settings.PreferenceKeys.Key.ALL_DEVICES_NAMES_KEY;
+import static com.particlesdevs.photoncamera.util.FileManager.sPHOTON_TUNING_DIR;
+
 import android.os.Build;
 import android.util.Log;
 
@@ -13,9 +16,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
-
-import static com.particlesdevs.photoncamera.settings.PreferenceKeys.Key.ALL_DEVICES_NAMES_KEY;
-import static com.particlesdevs.photoncamera.util.FileManager.sPHOTON_TUNING_DIR;
 
 public class Specific {
     private static final String TAG = "Specific";
@@ -53,7 +53,6 @@ public class Specific {
             if (!loaded) {
                 try {
                     Set<String> mSupportedDevicesSet = mSettingsManager.getStringSet(PreferenceKeys.Key.DEVICES_PREFERENCE_FILE_NAME.mValue, ALL_DEVICES_NAMES_KEY, null);
-                    //BufferedReader indevice = HttpLoader.readURL("https://raw.githubusercontent.com/eszdman/PhotonCamera/dev/app/SupportedList.txt");
                     boolean specificExists = mSupportedDevicesSet.contains(SupportedDevice.THIS_DEVICE);
                     mSettingsManager.set(PreferenceKeys.Key.DEVICES_PREFERENCE_FILE_NAME.mValue, "specific_exists", specificExists);
                     if (!specificExists) return;

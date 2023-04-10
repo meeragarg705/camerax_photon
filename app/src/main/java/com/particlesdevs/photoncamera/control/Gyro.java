@@ -7,9 +7,6 @@ import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.particlesdevs.photoncamera.api.CameraMode;
-import com.particlesdevs.photoncamera.app.PhotonCamera;
-
 import java.util.ArrayList;
 
 public class Gyro {

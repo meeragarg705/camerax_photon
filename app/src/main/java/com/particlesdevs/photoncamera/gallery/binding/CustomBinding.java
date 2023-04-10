@@ -15,12 +15,7 @@ import com.particlesdevs.photoncamera.gallery.model.GalleryItem;
 import com.particlesdevs.photoncamera.gallery.views.Histogram;
 
 public class CustomBinding {
-    /**
-     * Updates {@link Histogram.HistogramModel} associated with the {@link Histogram}(here, Histogram with id "histogram_view")
-     *
-     * @param histogram the {@link Histogram} object which has used the attribute bindHistogram="@{exifmodel.histogramModel}"
-     * @param model     the {@link Histogram.HistogramModel} object associated with the parent layout of this viewGroup
-     */
+
     @BindingAdapter("bindHistogram")
     public static void updateHistogram(Histogram histogram, Histogram.HistogramModel model) {
         if (model != null) {

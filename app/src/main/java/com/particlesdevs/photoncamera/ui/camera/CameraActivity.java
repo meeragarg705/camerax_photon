@@ -1,5 +1,7 @@
 package com.particlesdevs.photoncamera.ui.camera;
 
+import static android.os.Build.VERSION.SDK_INT;
+
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -30,8 +32,6 @@ import com.particlesdevs.photoncamera.util.log.FragmentLifeCycleMonitor;
 
 import java.util.Arrays;
 
-import static android.os.Build.VERSION.SDK_INT;
-
 
 public class CameraActivity extends BaseActivity {
 
@@ -53,7 +53,7 @@ public class CameraActivity extends BaseActivity {
         setContentView(R.layout.activity_camera);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        //Preferences Init
+        
         PreferenceManager.setDefaultValues(this, R.xml.preferences, MigrationManager.readAgain);
         PreferenceKeys.setDefaults(this);
         PhotonCamera.getSettings().loadCache();
@@ -61,10 +61,10 @@ public class CameraActivity extends BaseActivity {
         getSupportFragmentManager().registerFragmentLifecycleCallbacks(new FragmentLifeCycleMonitor(), true);
 
         if (hasAllPermissions()) {
-//            if (null == savedInstanceState)
+
             tryLoad();
         } else
-            requestPermission(); //First Permission request
+            requestPermission(); 
     }
     private void requestPermission() {
         requestPermissions(PERMISSIONS, CODE_REQUEST_PERMISSIONS);
@@ -78,22 +78,22 @@ public class CameraActivity extends BaseActivity {
                 intent.addCategory("android.intent.category.DEFAULT");
                 intent.setData(Uri.parse(String.format("package:%s",getApplicationContext().getPackageName())));
                 startActivityIntent.launch(intent);
-//                startActivityForResult(intent, 2296);
+
             } catch (Exception e) {
                 Intent intent = new Intent();
                 intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                 startActivityIntent.launch(intent);
-//                startActivityForResult(intent, 2296);
+
             }
-            //String[] perms = {Manifest.permission.MANAGE_EXTERNAL_STORAGE};
-            //requestPermissions(perms, CODE_REQUEST_PERMISSIONS+1);
+            
+            
         } else {
-            //below android 11
+            
             requestPermissions(PERMISSIONS2, CODE_REQUEST_PERMISSIONS+1);
         }
     }
 
-    private boolean hasAllPermissions() { //checks if permissions have already been granted
+    private boolean hasAllPermissions() { 
         return Arrays.stream(PERMISSIONS).allMatch(permission -> checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED);
     }
 
@@ -110,7 +110,7 @@ public class CameraActivity extends BaseActivity {
         Log.d("CameraActivity", "onRequestPermissionsResult() called with: " + "requestCode = [" + requestCode + "], " + "permissions = [" + Arrays.toString(permissions) + "], " + "grantResults = [" + Arrays.toString(grantResults) + "]");
         if (requestCode == CODE_REQUEST_PERMISSIONS) {
             if (Arrays.stream(grantResults).asLongStream().anyMatch(value -> value == PackageManager.PERMISSION_DENIED)) {
-                requestPermission(); //Recursive Permission check
+                requestPermission(); 
                 requestCount++;
             } else
                 tryLoad();
@@ -169,24 +169,24 @@ public class CameraActivity extends BaseActivity {
     }
 
     private void hideSystemUI() {
-        // Enables regular immersive mode.
-        // For "lean back" mode, remove SYSTEM_UI_FLAG_IMMERSIVE.
-        // Or for "sticky immersive," replace it with SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        
+        
+        
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_IMMERSIVE
-                        // Set the content to appear under the system bars so that the
-                        // content doesn't resize when the system bars hide and show.
+                        
+                        
                         | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        // Hide the nav bar and status bar
+                        
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
     }
 
-    // Shows the system bars by removing all the flags
-    // except for the ones that make the content appear under the system bars.
+    
+    
     private void showSystemUI() {
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(

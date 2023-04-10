@@ -49,9 +49,6 @@ import org.jetbrains.annotations.NotNull;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-/**
- * Created by Blaž Šolar on 24/01/14.
- */
 public class HorizontalPicker extends View {
 
     public static final String TAG = "HorizontalTimePicker";

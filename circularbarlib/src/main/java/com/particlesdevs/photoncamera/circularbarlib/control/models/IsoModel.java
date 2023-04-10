@@ -16,9 +16,7 @@ import com.particlesdevs.photoncamera.circularbarlib.ui.views.knobview.KnobView;
 import com.particlesdevs.photoncamera.circularbarlib.ui.views.knobview.ShadowTextDrawable;
 
 import java.util.ArrayList;
-/**
- * Created by killerink, vibhorSrv, eszdman
- */
+
 public class IsoModel extends ManualModel<Integer> {
 
     public IsoModel(Context context, CameraCharacteristics cameraCharacteristics, Range<Integer> range,

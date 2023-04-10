@@ -8,9 +8,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.util.Locale;
 
-/**
- * Created by Vibhor Srivastava on October 14, 2021
- */
+
 public class GalleryItem implements Checkable {
     private final MediaFile file;
     private final String mediaTypeTag;

@@ -80,11 +80,7 @@ public class TouchFocus {
         if (y < 0)
             y = 0;
         Log.v(TAG,"y:"+y);
-        /*if (y > CurUi.y)
-            y = CurUi.y;
-        if (x > CurUi.x)
-            x  =CurUi.x;*/
-        //use 1/6 from the the sensor size for the focus rect
+
         int width_to_set = sizee.width() / 6;
         float kProp = (float) CurUi.x / (float) (CurUi.y);
         int height_to_set = (int) (width_to_set * kProp);
@@ -107,9 +103,9 @@ public class TouchFocus {
         MeteringRectangle[] rectaf = new MeteringRectangle[1];
         Log.v(TAG, "\nInput x/y:" + x + "/" + y + "\n" +
                 "sensor size width/height to set:" + width_to_set + "/" + height_to_set + "\n" +
-                "preview/sensorsize: " + CurUi.toString() + " / " + sizee.toString() + "\n" +
+                "preview/sensorsize: " + CurUi + " / " + sizee + "\n" +
                 "scale x/y:" + x_scale + "/" + y_scale + "\n" +
-                "final rect :" + rect_to_set.toString());
+                "final rect :" + rect_to_set);
         rectaf[0] = rect_to_set;
         triggerAutoFocus(rectaf);
     }
@@ -147,20 +143,17 @@ public class TouchFocus {
             Log.w(TAG, "triggerAutoFocus(): mPreviewRequestBuilder is null");
             return;
         }
-        //builder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_CANCEL);
-        //builder.set(CaptureRequest.CONTROL_AF_MODE, CaptureRequest.CONTROL_AF_MODE_OFF);
-        //captureController.rebuildPreviewBuilderOneShot();
+
         builder.set(CaptureRequest.CONTROL_AF_REGIONS, captureController.mPreviewMeteringAF);
         builder.set(CaptureRequest.CONTROL_AE_REGIONS, captureController.mPreviewMeteringAE);
         builder.set(CaptureRequest.CONTROL_MODE, CaptureRequest.CONTROL_MODE_AUTO);
         builder.set(CaptureRequest.CONTROL_AF_MODE, captureController.mPreviewAFMode);
         builder.set(CaptureRequest.CONTROL_AE_MODE, captureController.mPreviewAEMode);
-        //set focus area repeating,else cam forget after one frame where it should focus
-        //trigger af start only once. cam starts focusing till its focused or failed
+
         builder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER, CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_START);
         builder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_START);
         captureController.rebuildPreviewBuilderOneShot();
-        //set focus trigger back to idle to signal cam after focusing is done to do nothing
+
         builder.set(CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER, CaptureRequest.CONTROL_AE_PRECAPTURE_TRIGGER_IDLE);
         builder.set(CaptureRequest.CONTROL_AF_TRIGGER, CaptureRequest.CONTROL_AF_TRIGGER_IDLE);
         captureController.rebuildPreviewBuilderOneShot();

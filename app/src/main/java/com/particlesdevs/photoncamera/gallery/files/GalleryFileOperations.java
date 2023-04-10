@@ -22,9 +22,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * Created by Vibhor Srivastava on October 13, 2021
- */
+
 public class GalleryFileOperations {
     public static final int REQUEST_PERM_DELETE = 1010;
     private static final String[] INCLUDED_IMAGE_FOLDERS = new String[]{"%DCIM/PhotonCamera/%", "%DCIM/PhotonCamera/Raw/%", "%DCIM/Camera/%"};

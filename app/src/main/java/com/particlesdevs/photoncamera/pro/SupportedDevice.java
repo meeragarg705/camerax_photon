@@ -1,8 +1,8 @@
 package com.particlesdevs.photoncamera.pro;
 
-import android.os.AsyncTask;
+import static com.particlesdevs.photoncamera.settings.PreferenceKeys.Key.ALL_DEVICES_NAMES_KEY;
+
 import android.os.Build;
-import android.util.Log;
 
 import com.hunter.library.debug.HunterDebug;
 import com.particlesdevs.photoncamera.R;
@@ -13,13 +13,8 @@ import com.particlesdevs.photoncamera.util.HttpLoader;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import static com.particlesdevs.photoncamera.settings.PreferenceKeys.Key.ALL_DEVICES_NAMES_KEY;
 
 public class SupportedDevice {
     public static final String THIS_DEVICE = Build.BRAND.toLowerCase() + ":" + Build.DEVICE.toLowerCase();

@@ -13,7 +13,7 @@ import com.particlesdevs.photoncamera.R;
 public class BottomSheetFragment extends BottomSheetDialogFragment {
 
     public BottomSheetFragment() {
-        // Required empty public constructor
+
     }
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -23,7 +23,7 @@ public class BottomSheetFragment extends BottomSheetDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View view = inflater.inflate(R.layout.bottom_sheet_dialog_layout, container, false);
         return view;
     }

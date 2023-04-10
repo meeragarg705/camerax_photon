@@ -1,22 +1,4 @@
-/*
- *
- *  PhotonCamera
- *  AuxButtonsLayout.java
- *  Copyright (C) 2020 - 2021  Vibhor
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- * /
- */
+
 
 package com.particlesdevs.photoncamera.ui.camera.views;
 
@@ -29,7 +11,6 @@ import android.widget.LinearLayout;
 import androidx.annotation.Nullable;
 
 import com.particlesdevs.photoncamera.R;
-import com.particlesdevs.photoncamera.ui.camera.binding.CustomBinding;
 import com.particlesdevs.photoncamera.ui.camera.data.CameraLensData;
 import com.particlesdevs.photoncamera.ui.camera.model.AuxButtonsModel;
 
@@ -37,18 +18,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Container for multi-camera buttons.
- * <p>
- * This layout's functionality is dependent on {@link AuxButtonsModel} which is provided
- * through DataBinding {@link CustomBinding#setAuxButtonModel(AuxButtonsLayout, AuxButtonsModel)}.
- */
+
 public class AuxButtonsLayout extends LinearLayout {
 
-    /**
-     * this map stores dynamically generated view-ids and corresponding camera-ids attached to that view(or button)
-     * for functional purpose
-     */
+
     private final HashMap<Integer, String> auxButtonsMap = new HashMap<>();
 
     private final LinearLayout.LayoutParams buttonParams;

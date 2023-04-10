@@ -1,5 +1,7 @@
 package com.particlesdevs.photoncamera.gallery.ui.fragments;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -33,7 +35,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
@@ -55,7 +56,6 @@ import com.particlesdevs.photoncamera.gallery.viewmodel.GalleryViewModel;
 import com.particlesdevs.photoncamera.processing.ImagePath;
 import com.particlesdevs.photoncamera.util.AwsUtils;
 
-
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -68,10 +68,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
-import io.reactivex.schedulers.Schedulers;
-
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 
 public class ImageViewerFragment extends Fragment {
@@ -87,10 +83,10 @@ public class ImageViewerFragment extends Fragment {
     private boolean isExifVisible;
     private String mode;
     static TransferUtility transferUtility;
-    // A List of all transfers
+    
     static List<TransferObserver> observers;
     static ArrayList<HashMap<String, Object>> transferRecordMaps;
-    // Reference to the utility class
+    
     static AwsUtils awsUtils;
     private SSIVListener ssivListener = new SSIVListener() {
         @Override
@@ -198,12 +194,12 @@ public class ImageViewerFragment extends Fragment {
 
                 @Override
                 public void onImageSelectionChanged(int numOfSelectedFiles) {
-                    //Not implemented
+                    
                 }
 
                 @Override
                 public void onImageSelectionStopped() {
-                    //Not implemented
+                    
                 }
             });
         }
@@ -246,9 +242,9 @@ public class ImageViewerFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        if (isCompareMode()) {
+
         fragmentGalleryImageViewerBinding.setMiniExifVisible(!fragmentGalleryImageViewerBinding.getButtonsVisible());
-//        }
+
     }
 
     public void setSsivListener(SSIVListener ssivListener) {
@@ -309,10 +305,10 @@ public class ImageViewerFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == Constants.REQUEST_EDIT_IMAGE) {
             if (resultCode == Activity.RESULT_CANCELED) {
-//                if (newEditedFile != null) {
-//                    if (newEditedFile.exists() && newEditedFile.length() == 0)
-//                        Log.d(TAG, "onActivityResult(" + requestCode + "," + resultCode + ")->Dummy file deleted : " + newEditedFile.delete());
-//                }
+
+
+
+
             }
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null && data.getData() != null) {
@@ -324,7 +320,7 @@ public class ImageViewerFragment extends Fragment {
                     updateExif();
                 }
             }
-            //            Log.d(TAG, "onActivityResult(): requestCode = [" + requestCode + "], resultCode = [" + resultCode + "], data = [" + data + "]");
+            
         }
     }
 
@@ -395,7 +391,7 @@ public class ImageViewerFragment extends Fragment {
                 return cursor.getString(columnIndex);
             }
         }
-        // If the display name is not found for any reason, use the Uri path as a fallback.
+        
         Log.w(TAG, "Couldnt determine DISPLAY_NAME for Uri.  Falling back to Uri path: " + uri.getPath());
         return uri.getPath();
     }
@@ -406,17 +402,17 @@ public class ImageViewerFragment extends Fragment {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
 
-//        LinearLayout copy = bottomSheetDialog.findViewById(R.id.copyLinearLayout);
+
         LinearLayout shareAws = bottomSheetDialog.findViewById(R.id.shareLinearLayout);
         LinearLayout uploadGoogle = bottomSheetDialog.findViewById(R.id.uploadLinearLayout);
         LinearLayout download = bottomSheetDialog.findViewById(R.id.download);
-//        LinearLayout delete = bottomSheetDialog.findViewById(R.id.delete);
+
 
         bottomSheetDialog.show();
 
 
         shareAws.setOnClickListener(v -> {
-//            Toast.makeText(getContext(), "Amazon S3 is Clicked", Toast.LENGTH_LONG).show();
+
             File file = null;
             try {
                 file = readContentToFile(uri);
@@ -505,7 +501,7 @@ public class ImageViewerFragment extends Fragment {
             galleryItems.remove(indexToDelete);
             initImageAdapter(galleryItems);
             refreshLinearGridAdapter(galleryItems);
-            //auto scroll to the next photo
+            
             viewPager.setCurrentItem(indexToDelete, true);
             updateExif();
             Toast.makeText(getContext(), R.string.image_deleted, Toast.LENGTH_SHORT).show();
@@ -525,25 +521,25 @@ class UploadListener implements TransferListener {
         uploadContext = context;
     }
 
-    // Simply updates the UI list when notified.
+    
     @Override
     public void onError(int id, Exception e) {
         Log.e(TAG, "Error during upload: " + id, e);
         Toast.makeText(uploadContext, "Image Upload Failed."+ e.getMessage(), Toast.LENGTH_LONG).show();
-//        updateList();
+
     }
 
     @Override
     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
         Log.d(TAG, String.format("onProgressChanged: %d, total: %d, current: %d",
                 id, bytesTotal, bytesCurrent));
-//        updateList();
+
     }
 
     @Override
     public void onStateChanged(int id, TransferState newState) {
         Log.d(TAG, "onStateChanged: " + id + ", " + newState);
-//        updateList();
+
         if (newState == TransferState.COMPLETED) {
             Toast.makeText(uploadContext, "Image Uploaded To S3", Toast.LENGTH_LONG).show();
         }

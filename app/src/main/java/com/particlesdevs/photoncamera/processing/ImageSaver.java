@@ -7,7 +7,6 @@ import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.DngCreator;
 import android.media.Image;
 import android.media.ImageReader;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.exifinterface.media.ExifInterface;
@@ -15,27 +14,16 @@ import androidx.exifinterface.media.ExifInterface;
 import com.hunter.library.debug.HunterDebug;
 import com.particlesdevs.photoncamera.api.ParseExif;
 import com.particlesdevs.photoncamera.app.PhotonCamera;
-import com.particlesdevs.photoncamera.capture.CaptureController;
 import com.particlesdevs.photoncamera.control.GyroBurst;
-import com.particlesdevs.photoncamera.processing.processor.ProcessorBase;
-import com.particlesdevs.photoncamera.util.FileManager;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ImageSaver {
-    /**
-     * Image frame buffer
-     */
+    
     public static final int JPG_QUALITY = 97;
     private static final String TAG = "ImageSaver";
 
@@ -67,7 +55,7 @@ public class ImageSaver {
                 implementation.addYUV(mImage);
                 break;
 
-            //case ImageFormat.RAW10:
+            
             case ImageFormat.RAW_SENSOR:
                 implementation.addRAW16(mImage);
                 break;
@@ -108,7 +96,7 @@ public class ImageSaver {
             }
         }
 
-        //Different method name just for clarity of usage
+        
         public static boolean saveStackedRaw(Path dngFilePath,
                                              Image image,
                                              CameraCharacteristics characteristics,
@@ -133,7 +121,7 @@ public class ImageSaver {
             try {
                 OutputStream outputStream = Files.newOutputStream(dngFilePath);
                 dngCreator.writeImage(outputStream, image);
-//                image.close();
+
                 outputStream.close();
                 return true;
             } catch (IOException e) {

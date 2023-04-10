@@ -19,9 +19,7 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-/**
- * Created by vibhorSrv
- */
+
 public class ViewObserver implements Observer {
     private final Activity activity;
     private final RelativeLayout manualMode;

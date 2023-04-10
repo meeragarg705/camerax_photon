@@ -18,9 +18,7 @@ import com.particlesdevs.photoncamera.control.Vibration;
 
 import java.util.Locale;
 
-/**
- * Created by vibhorSrv on 12/09/2020
- */
+
 public class UniversalSeekBarPreference extends Preference implements SeekBar.OnSeekBarChangeListener {
     private static final String TAG = "UnivSeekBarPref";
     private static final boolean isLoggingOn = false;

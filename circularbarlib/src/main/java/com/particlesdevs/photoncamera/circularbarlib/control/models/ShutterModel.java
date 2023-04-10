@@ -17,9 +17,7 @@ import com.particlesdevs.photoncamera.circularbarlib.ui.views.knobview.ShadowTex
 
 import java.util.ArrayList;
 
-/**
- * Created by killerink, vibhorSrv, eszdman
- */
+
 public class ShutterModel extends ManualModel<Long> {
 
     public ShutterModel(Context context, CameraCharacteristics cameraCharacteristics, Range<Long> range,

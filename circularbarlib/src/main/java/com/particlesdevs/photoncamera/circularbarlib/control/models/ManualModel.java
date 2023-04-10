@@ -21,16 +21,7 @@ import com.particlesdevs.photoncamera.circularbarlib.ui.views.knobview.ShadowTex
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * The base model class for data model to be attached to {@link KnobView} instances
- * <p>
- * Also responsible for updating {@link ManualParamModel}
- * <p>
- * Created by KillerInk on 31/Aug/2020
- * Modified by Vibhor
- *
- * @param <T> the type of data contained by the model
- */
+
 public abstract class ManualModel<T extends Comparable<? super T>> implements KnobViewChangedListener, IModel {
     protected final ManualParamModel manualParamModel;
     private final List<KnobItemInfo> knobInfoList;

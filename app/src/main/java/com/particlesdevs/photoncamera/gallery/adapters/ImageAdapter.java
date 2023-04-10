@@ -1,5 +1,7 @@
 package com.particlesdevs.photoncamera.gallery.adapters;
 
+import static com.particlesdevs.photoncamera.gallery.helper.Constants.DOUBLE_TAP_ZOOM_DURATION_MS;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -24,8 +26,6 @@ import com.particlesdevs.photoncamera.gallery.model.GalleryItem;
 import org.apache.commons.io.FileUtils;
 
 import java.util.List;
-
-import static com.particlesdevs.photoncamera.gallery.helper.Constants.DOUBLE_TAP_ZOOM_DURATION_MS;
 
 
 public class ImageAdapter extends PagerAdapter {
@@ -77,7 +77,7 @@ public class ImageAdapter extends PagerAdapter {
         scaleImageView.setOnImageEventListener(imageEventListener);
         if (fileExt.equalsIgnoreCase("jpg") || fileExt.equalsIgnoreCase("png")) {
             scaleImageView.setImage(ImageSource.uri(galleryItem.getFile().getFileUri()));
-        } else if (fileExt.equalsIgnoreCase("dng")) { //For DNG Files
+        } else if (fileExt.equalsIgnoreCase("dng")) { 
             Glide.with(container.getContext())
                     .asBitmap()
                     .load(galleryItem.getFile().getFileUri())

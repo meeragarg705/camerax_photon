@@ -15,9 +15,7 @@ import com.particlesdevs.photoncamera.R;
 
 import java.util.function.Function;
 
-/**
- * Created by Vibhor on 11/01/2021
- */
+
 public class FocusCircleView extends View {
     private static final int[] STATE_FOCUSED_LOCKED = {R.attr.focused_locked};
     private static final int[] STATE_UNFOCUSED_LOCKED = {R.attr.unfocused_locked};

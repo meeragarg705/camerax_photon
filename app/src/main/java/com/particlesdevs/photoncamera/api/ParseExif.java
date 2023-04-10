@@ -1,9 +1,31 @@
 package com.particlesdevs.photoncamera.api;
 
+import static android.hardware.camera2.CaptureResult.Key;
+import static android.hardware.camera2.CaptureResult.LENS_APERTURE;
+import static android.hardware.camera2.CaptureResult.LENS_FOCAL_LENGTH;
+import static android.hardware.camera2.CaptureResult.SENSOR_EXPOSURE_TIME;
+import static android.hardware.camera2.CaptureResult.SENSOR_SENSITIVITY;
+import static androidx.exifinterface.media.ExifInterface.ORIENTATION_NORMAL;
+import static androidx.exifinterface.media.ExifInterface.TAG_APERTURE_VALUE;
+import static androidx.exifinterface.media.ExifInterface.TAG_COLOR_SPACE;
+import static androidx.exifinterface.media.ExifInterface.TAG_COMPRESSION;
+import static androidx.exifinterface.media.ExifInterface.TAG_COPYRIGHT;
+import static androidx.exifinterface.media.ExifInterface.TAG_EXIF_VERSION;
+import static androidx.exifinterface.media.ExifInterface.TAG_EXPOSURE_TIME;
+import static androidx.exifinterface.media.ExifInterface.TAG_FOCAL_LENGTH;
+import static androidx.exifinterface.media.ExifInterface.TAG_F_NUMBER;
+import static androidx.exifinterface.media.ExifInterface.TAG_IMAGE_DESCRIPTION;
+import static androidx.exifinterface.media.ExifInterface.TAG_MAKE;
+import static androidx.exifinterface.media.ExifInterface.TAG_MODEL;
+import static androidx.exifinterface.media.ExifInterface.TAG_PHOTOGRAPHIC_SENSITIVITY;
+import static androidx.exifinterface.media.ExifInterface.TAG_SENSITIVITY_TYPE;
+
 import android.hardware.camera2.CaptureResult;
 import android.os.Build;
 import android.util.Log;
+
 import androidx.exifinterface.media.ExifInterface;
+
 import com.particlesdevs.photoncamera.app.PhotonCamera;
 import com.particlesdevs.photoncamera.processing.parameters.IsoExpoSelector;
 
@@ -13,9 +35,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-
-import static android.hardware.camera2.CaptureResult.*;
-import static androidx.exifinterface.media.ExifInterface.*;
 
 public class ParseExif {
     public static final SimpleDateFormat sFormatter;
@@ -79,13 +98,7 @@ public class ParseExif {
         data.COLOR_SPACE = "sRGB";
         data.EXIF_VERSION = "0231";
         data.IMAGE_DESCRIPTION = PhotonCamera.getParameters().toString();
-        /*
-        //saving for later use
-        float sensorWidth = CameraFragment.mCameraCharacteristics.get(CameraCharacteristics.SENSOR_INFO_PHYSICAL_SIZE).getWidth();
-        String mm35 = String.valueOf((short) (36 * (result.get(LENS_FOCAL_LENGTH) / sensorWidth)));
-        inter.setAttribute(TAG_FOCAL_LENGTH_IN_35MM_FILM, mm35);
-        Log.d(TAG, "Saving 35mm FocalLength = " + mm35);
-        */
+
         return data;
     }
 

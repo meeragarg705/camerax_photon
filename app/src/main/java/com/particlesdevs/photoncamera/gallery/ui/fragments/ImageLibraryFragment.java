@@ -1,11 +1,12 @@
 package com.particlesdevs.photoncamera.gallery.ui.fragments;
 
+import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
+
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +29,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-
 import com.google.android.material.snackbar.Snackbar;
 import com.particlesdevs.photoncamera.R;
 import com.particlesdevs.photoncamera.databinding.FragmentGalleryImageLibraryBinding;
@@ -55,8 +55,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import io.reactivex.schedulers.Schedulers;
-
-import static com.amazonaws.mobile.auth.core.internal.util.ThreadUtils.runOnUiThread;
 
 
 public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.GridAdapterCallback {
@@ -87,7 +85,7 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
         viewModel = new ViewModelProvider(requireActivity()).get(GalleryViewModel.class);
         recyclerView = fragmentGalleryImageLibraryBinding.imageGridRv;
         recyclerView.setHasFixedSize(true);
-        recyclerView.setItemViewCacheSize(10); //trial
+        recyclerView.setItemViewCacheSize(10);
         observeAllMediaFiles();
         getAwsData();
 
@@ -166,12 +164,6 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
         closeFABMenu();
         showBottomSheetDialog(imageUris);
 
-        //        Intent shareIntent = new Intent();
-//        shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-//        shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, imageUris);
-//        shareIntent.setType("image/*");
-//        startActivity(Intent.createChooser(shareIntent, null));
-
 
     }
 
@@ -182,11 +174,11 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getContext());
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_dialog_layout);
 
-//        LinearLayout copy = bottomSheetDialog.findViewById(R.id.copyLinearLayout);
+
         LinearLayout shareAws = bottomSheetDialog.findViewById(R.id.shareLinearLayout);
         LinearLayout uploadGoogle = bottomSheetDialog.findViewById(R.id.uploadLinearLayout);
         LinearLayout download = bottomSheetDialog.findViewById(R.id.download);
-//        LinearLayout delete = bottomSheetDialog.findViewById(R.id.delete);
+
 
         bottomSheetDialog.show();
 
@@ -240,7 +232,7 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
         b.putInt(Constants.IMAGE_POSITION_KEY, position);
         NavController navController = Navigation.findNavController(view);
         navController.navigate(R.id.action_imageLibraryFragment_to_imageViewerFragment, b);
-//            navController.setGraph(navController.getGraph(), b);
+
     }
 
     @Override
@@ -300,7 +292,7 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
         final File file = new File(getContext().getCacheDir(), getDisplayName(uri));
         try (
                 final InputStream in = getContext().getContentResolver().openInputStream(uri);
-                final OutputStream out = new FileOutputStream(file, false);
+                final OutputStream out = new FileOutputStream(file, false)
         ) {
             byte[] buffer = new byte[1024];
             for (int len; (len = in.read(buffer)) != -1; ) {
@@ -313,14 +305,14 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
     private String getDisplayName(Uri uri) {
         final String[] projection = {MediaStore.Images.Media.DISPLAY_NAME};
         try (
-                Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null);
+                Cursor cursor = getContext().getContentResolver().query(uri, projection, null, null, null)
         ) {
             int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
             if (cursor.moveToFirst()) {
                 return cursor.getString(columnIndex);
             }
         }
-        // If the display name is not found for any reason, use the Uri path as a fallback.
+
         Log.w(TAG, "Couldnt determine DISPLAY_NAME for Uri.  Falling back to Uri path: " + uri.getPath());
         return uri.getPath();
     }

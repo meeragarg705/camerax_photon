@@ -11,13 +11,7 @@ public class CountdownTimer extends CountDownTimer {
     private final TimerCallback callback;
     private final long interval;
 
-    /**
-     * @param millisInFuture    The number of millis in the future from the call
-     *                          to {@link #start()} until the countdown is done and {@link #onFinish()}
-     *                          is called.
-     * @param countDownInterval The interval along the way to receive
-     *                          {@link #onTick(long)} callbacks.
-     */
+
     public CountdownTimer(TextView tv, long millisInFuture, long countDownInterval, TimerCallback callback) {
         super(millisInFuture, countDownInterval);
         this.callback = callback;

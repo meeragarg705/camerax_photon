@@ -3,7 +3,6 @@ package com.particlesdevs.photoncamera.settings;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
-import android.hardware.camera2.CameraManager;
 
 import androidx.annotation.StringRes;
 
@@ -11,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.hunter.library.debug.HunterDebug;
 import com.particlesdevs.photoncamera.R;
-import com.particlesdevs.photoncamera.api.CameraManager2;
 import com.particlesdevs.photoncamera.app.PhotonCamera;
 
 import java.util.HashMap;
@@ -19,11 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static android.content.Context.CAMERA_SERVICE;
 
-/**
- * Created by Vibhor 06/09/2020
- */
 public class PreferenceKeys {
     public static final String SCOPE_GLOBAL = SettingsManager.SCOPE_GLOBAL;
     private static final String TAG = "PreferenceKeys";

@@ -11,8 +11,6 @@ import android.hardware.camera2.params.BlackLevelPattern;
 import android.hardware.camera2.params.InputConfiguration;
 import android.hardware.camera2.params.OutputConfiguration;
 import android.os.Handler;
-import android.util.Log;
-import android.view.Surface;
 
 import com.eszdman.photonbypass.ReflectBypass;
 import com.particlesdevs.photoncamera.capture.CaptureController;
@@ -24,11 +22,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.List;
 
 public class CameraReflectionApi {
-    //private static final String TAG = "CameraReflectionApi";
+    
     public static CaptureResult.Key<?> createKeyResult(String name, Class<?> type){
         Class captureResultKey = ReflectBypass.findClass("android/hardware/camera2/CaptureResult$Key");
         try {
@@ -42,7 +39,7 @@ public class CameraReflectionApi {
 
     public static <T> void set(CameraCharacteristics.Key<T> key, T value) {
         try {
-            //Class<?> metadataNativeClass = ReflectBypass.findClass("android/hardware/camera2/impl/CameraMetadataNative");
+            
             Field CameraMetadataNativeField = RestrictionBypass.getDeclaredField(CameraCharacteristics.class, "mProperties");
             CameraMetadataNativeField.setAccessible(true);
             Object CameraMetadataNative = CameraMetadataNativeField.get(CaptureController.mCameraCharacteristics);
@@ -105,7 +102,7 @@ public class CameraReflectionApi {
         Method createCustomCaptureSession = null;
         try {
             createCustomCaptureSession = RestrictionBypass.getDeclaredMethod(cameraDevice.getClass(), "createCustomCaptureSession",
-            //createCustomCaptureSession = cameraDevice.getClass().getDeclaredMethod("createCustomCaptureSession",
+            
                     InputConfiguration.class,List.class,Integer.TYPE,CameraCaptureSession.StateCallback.class,Handler.class);
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
@@ -117,7 +114,7 @@ public class CameraReflectionApi {
 
     public static void PatchBL(BlackLevelPattern pattern, int[] bl) {
         try {
-            //noinspection JavaReflectionMemberAccess
+            
             Field mCfaOffsetsField = pattern.getClass().getDeclaredField("mCfaOffsets");
             mCfaOffsetsField.setAccessible(true);
             Object mCfaOffsets = mCfaOffsetsField.get(pattern);

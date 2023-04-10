@@ -12,11 +12,6 @@ public class ImageBufferUtils {
             int ind = size.x * hotpixel.y + hotpixel.x;
             in.asShortBuffer().put(ind, (short) 1024);
         }
-        /*for(int h = 30; h<90;h++) {
-            for(int w =30; w<90;w++) {
-                int ind = size.x*h + w;
-                in.asShortBuffer().put(ind, (short) 1024);
-            }
-        }*/
+
     }
 }

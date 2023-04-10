@@ -10,7 +10,6 @@ import android.graphics.PorterDuffXfermode;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.particlesdevs.photoncamera.processing.opengl.scripts.GLHistogram;
 import com.particlesdevs.photoncamera.processing.rs.HistogramRs;
 
 public class Histogram extends View {
@@ -19,7 +18,7 @@ public class Histogram extends View {
     private HistogramLoadingListener sHistogramLoadingListener;
     private HistogramModel histogramModel;
     private final Path wallPath = new Path();
-    //GLHistogram glHistogram = new GLHistogram();
+
     public Histogram(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
         wallPaint = new Paint();

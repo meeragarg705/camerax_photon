@@ -19,10 +19,7 @@ import com.particlesdevs.photoncamera.gallery.files.ImageFile;
 import com.particlesdevs.photoncamera.ui.camera.CustomOrientationEventListener;
 import com.particlesdevs.photoncamera.ui.camera.model.CameraFragmentModel;
 
-/**
- * Class get used to update the Models binded to the ui
- * it should not contain any ref to ui
- */
+
 public class CameraFragmentViewModel extends AndroidViewModel {
 
     private static final String TAG = CameraFragmentViewModel.class.getSimpleName();

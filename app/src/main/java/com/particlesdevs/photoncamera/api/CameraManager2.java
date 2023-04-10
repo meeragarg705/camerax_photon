@@ -32,23 +32,12 @@ public final class CameraManager2 {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private final Map<String, CameraLensData> mCameraLensDataMap = new LinkedHashMap<>();
     private final SettingsManager mSettingsManager;
-    /**
-     * This Set stores the set of all valid camera IDs as String,
-     * to be saved in SharedPreferences
-     */
+
     private Set<String> mAllCameraIDsSet = new LinkedHashSet<>();
-    /**
-     * This Set stores the set of {@link CameraLensData} objects as JSON strings,
-     * to be saved in SharedPreferences
-     */
+
     private Set<String> mCameraLensDataJSONSet = new LinkedHashSet<>();
 
-    /**
-     * Initialise this class.
-     *
-     * @param cameraManager   {@link CameraManager} instance from {@link android.content.Context#CAMERA_SERVICE}
-     * @param settingsManager {@link SettingsManager}
-     */
+
     public CameraManager2(CameraManager cameraManager, SettingsManager settingsManager) {
         this.mSettingsManager = settingsManager;
         SpecificSetting sp = PhotonCamera.getSpecific().specificSetting;
@@ -145,13 +134,7 @@ public final class CameraManager2 {
         return cameraLensData;
     }
 
-    /**
-     * This method finds the optical zoom factor of multiple camera lenses with respect to the Main Camera for each facing(ie. Front and Back)
-     * <p>
-     * Note: Here, it is assumed that the first camera in the list for each facing is the Main Camera for that facing.
-     *
-     * @param mCameraLensData Map of all valid CameraLensData objects
-     */
+
     private void findLensZoomFactor(Map<String, CameraLensData> mCameraLensData) {
         CameraLensData mainBack = null;
         CameraLensData mainFront = null;
@@ -179,32 +162,23 @@ public final class CameraManager2 {
         mSettingsManager.set(_CAMERAS, CAMERA_COUNT_KEY, mAllCameraIDsSet.size());
         mSettingsManager.set(_CAMERAS, ALL_CAMERA_IDS_KEY, mAllCameraIDsSet);
 
-        //Serialise CameraLensData objects to JSON and store them to mCameraLensDataJSONSet
+
         mCameraLensDataMap.forEach((id, lensData) -> mCameraLensDataJSONSet.add(GSON.toJson(lensData)));
-        //Save mCameraLensDataJSONSet to SharedPreferences
         mSettingsManager.set(_CAMERAS, ALL_CAMERA_LENS_KEY, mCameraLensDataJSONSet);
     }
 
-    //Getters===========================================================================================================
 
-    /**
-     * @return the list of scanned Camera IDs
-     */
     public String[] getCameraIdList() {
         log("CameraCount:" + mAllCameraIDsSet.size()
                 + ", CameraIDs:" + Arrays.toString(mAllCameraIDsSet.toArray(new String[0])));
         return mAllCameraIDsSet.toArray(new String[0]);
     }
 
-    /**
-     * @return the map of CameraLensData
-     */
+
     public Map<String, CameraLensData> getCameraLensDataMap() {
         Log.d(TAG,"LensData : \n" + mCameraLensDataMap);
         return mCameraLensDataMap;
     }
-
-    //Bit analyzer for AUX number=======================================================================================
 
     private boolean getBit(int pos, int val) {
         return ((val >> (pos - 1)) & 1) == 1;

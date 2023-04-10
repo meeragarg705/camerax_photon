@@ -2,18 +2,8 @@ package com.particlesdevs.photoncamera.circularbarlib.model;
 
 import android.view.View;
 
-import com.particlesdevs.photoncamera.circularbarlib.R;
-
 import java.util.Observable;
 
-/**
- * The Observable data class responsible for the behaviour and appearance of {@link R.id#manual_mode} layout and its child elements
- * <p>
- * This model is attached to the said layout through DataBinding
- * for more information {@link R.layout#manual_palette }
- * <p>
- * Authors - Vibhor, KillerInk
- */
 public class ManualModeModel extends Observable {
     private String focusText;
     private String exposureText;

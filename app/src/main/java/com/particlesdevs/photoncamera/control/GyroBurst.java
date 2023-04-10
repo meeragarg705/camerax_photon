@@ -2,8 +2,6 @@ package com.particlesdevs.photoncamera.control;
 
 import androidx.annotation.NonNull;
 
-import java.util.ArrayList;
-
 public class GyroBurst {
     public float shakiness;
     public int samples;

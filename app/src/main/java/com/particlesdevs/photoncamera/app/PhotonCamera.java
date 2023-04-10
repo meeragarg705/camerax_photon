@@ -7,14 +7,11 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.renderscript.RenderScript;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -31,10 +28,7 @@ import com.particlesdevs.photoncamera.control.Vibration;
 import com.particlesdevs.photoncamera.debugclient.Debugger;
 import com.particlesdevs.photoncamera.pro.SensorSpecifics;
 import com.particlesdevs.photoncamera.pro.Specific;
-import com.particlesdevs.photoncamera.pro.SpecificSetting;
 import com.particlesdevs.photoncamera.pro.SupportedDevice;
-import com.particlesdevs.photoncamera.processing.ImagePath;
-import com.particlesdevs.photoncamera.processing.ImageSaver;
 import com.particlesdevs.photoncamera.processing.render.Parameters;
 import com.particlesdevs.photoncamera.processing.render.PreviewParameters;
 import com.particlesdevs.photoncamera.settings.MigrationManager;
@@ -45,19 +39,14 @@ import com.particlesdevs.photoncamera.util.AssetLoader;
 import com.particlesdevs.photoncamera.util.ObjectLoader;
 import com.particlesdevs.photoncamera.util.log.ActivityLifecycleMonitor;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class PhotonCamera extends Application {
     public static final boolean DEBUG = false;
     private static PhotonCamera sPhotonCamera;
-    //    private final ExecutorService executorService = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-//    private final ExecutorService executorService = Executors.newWorkStealingPool();
+    
+
     private final ExecutorService executorService = Executors.newSingleThreadExecutor(r -> {
         Thread t = new Thread(r);
         t.setPriority(Thread.MIN_PRIORITY);
@@ -244,15 +233,10 @@ public class PhotonCamera extends Application {
         mAssetLoader = new AssetLoader(this);
         mRS = RenderScript.create(this);
         mDebugger = new Debugger();
-        //test();
+        
     }
-    //  a MemoryInfo object for the device's current memory status.
-    /*public ActivityManager.MemoryInfo AvailableMemory() {
-        ActivityManager activityManager = (ActivityManager) mCameraActivity.SystemService(ACTIVITY_SERVICE);
-        ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
-        activityManager.getMemoryInfo(memoryInfo);
-        return memoryInfo;
-    }*/
+    
+
 
     @Override
     public void onTerminate() {

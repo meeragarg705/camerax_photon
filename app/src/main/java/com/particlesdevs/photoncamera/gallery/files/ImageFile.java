@@ -6,9 +6,7 @@ import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
-/**
- * Created by Vibhor Srivastava on October 13, 2021
- */
+
 public final class ImageFile extends MediaFile {
     private final long id;
     private final Uri fileUri;

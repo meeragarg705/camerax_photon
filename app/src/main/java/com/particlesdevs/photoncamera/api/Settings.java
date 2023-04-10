@@ -1,12 +1,12 @@
 package com.particlesdevs.photoncamera.api;
 
-import com.particlesdevs.photoncamera.settings.PreferenceKeys;
-
 import static android.hardware.camera2.CaptureRequest.NOISE_REDUCTION_MODE_OFF;
+
+import com.particlesdevs.photoncamera.settings.PreferenceKeys;
 
 public class Settings {
     private final String TAG = "Settings";
-    //Preferences
+    
 
     public int frameCount;
     public int lumenCount;
@@ -24,7 +24,7 @@ public class Settings {
     public double saturation;
     public double sharpness;
     public double contrastMpy = 1.0;
-    public int contrastConst = 0;//TODO
+    public int contrastConst = 0;
     public double noiseRstr;
     public double mergeStrength;
     public double compressor;
@@ -34,7 +34,7 @@ public class Settings {
     public boolean QuadBayer;
     public int cfaPattern;
     public int theme;
-    public boolean remosaic;//TODO
+    public boolean remosaic;
     public boolean eisPhoto;
     public boolean fpsPreview;
     public int alignAlgorithm;
@@ -42,7 +42,7 @@ public class Settings {
     public float[] toneMap;
     public float[] gamma;
 
-    //Camera direct related
+    
     public int noiseReduction = NOISE_REDUCTION_MODE_OFF;
     public CameraMode selectedMode;
 
@@ -59,9 +59,9 @@ public class Settings {
         DebugData = PreferenceKeys.isAfDataOn();
         roundEdge = PreferenceKeys.isRoundEdgeOn();
         sharpness = PreferenceKeys.getSharpnessValue();
-        contrastMpy = PreferenceKeys.getContrastValue();//TODO recheck
-//        contrastConst = get(contrastConst, "ContrastConst");///////TODO
-//        saturation = get(saturation, "Saturation");
+        contrastMpy = PreferenceKeys.getContrastValue();
+
+
         saturation = PreferenceKeys.getSaturationValue();
         exposureCompensation = PreferenceKeys.getFloat(PreferenceKeys.Key.KEY_EXPOCOMPENSATE_SEEKBAR);
         compressor = PreferenceKeys.getCompressorValue();

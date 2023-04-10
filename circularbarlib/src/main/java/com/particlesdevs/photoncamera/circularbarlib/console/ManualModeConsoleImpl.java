@@ -21,14 +21,6 @@ import com.particlesdevs.photoncamera.circularbarlib.ui.views.knobview.KnobView;
 
 import java.util.Observer;
 
-/**
- * Responsible for initialising and updating {@link KnobModel} and {@link ManualModeModel}
- * <p>
- * This class also manages the attaching/detaching of {@link ManualModel} subclasses to {@link KnobView}
- * and setting listeners to models
- * <p>
- * Authors - Vibhor, KillerInk
- */
 public class ManualModeConsoleImpl implements ManualModeConsole {
     private static final String TAG = "ManualModeConsole";
     private static ManualModeConsole sInstance;

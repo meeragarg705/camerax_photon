@@ -23,9 +23,7 @@ import com.particlesdevs.photoncamera.util.Utilities;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Vibhor Srivastava on 03-Dec-2020
- */
+
 public class ImageGridAdapter extends RecyclerView.Adapter<ImageGridAdapter.GridItemViewHolder> {
 
     private static final int SELECTION_ANIMATION_DURATION = 250;

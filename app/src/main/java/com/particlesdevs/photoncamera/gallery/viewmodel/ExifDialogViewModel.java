@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.AttributeSet;
 import android.util.Rational;
 
 import androidx.annotation.NonNull;
@@ -37,9 +36,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * The View Model class which updates the {@link ExifDialogModel}
- */
+
 public class ExifDialogViewModel extends AndroidViewModel {
     private static final String TAG = ExifDialogViewModel.class.getSimpleName();
     private final ExifDialogModel exifDialogModel;
@@ -55,11 +52,7 @@ public class ExifDialogViewModel extends AndroidViewModel {
         return exifDialogModel;
     }
 
-    /**
-     * Updates the ExifDialogModel using exif attributes stored in the Image File
-     *
-     * @param imageFile the image imageFile whose exif data is to be read
-     */
+
     public void updateModel(ContentResolver contentResolver, MediaFile imageFile) {
         ExifInterface exifInterface;
         InputStream inputStream;
@@ -79,8 +72,6 @@ public class ExifDialogViewModel extends AndroidViewModel {
         String attr_fnum = exifInterface.getAttribute(ExifInterface.TAG_F_NUMBER);
         String attr_focal = exifInterface.getAttribute(ExifInterface.TAG_FOCAL_LENGTH);
         String attr_date = exifInterface.getAttribute(ExifInterface.TAG_DATETIME);
-//        String attr_35mmfocal = exifInterface.getAttribute(ExifInterface.TAG_FOCAL_LENGTH_IN_35MM_FILM);
-//        Log.d("attr_35mmfocal", "fetched attr_35mmfocal = " + attr_35mmfocal);
 
         String exposure = (Utilities.formatExposureTime(Double.parseDouble(attr_exp == null ? "NaN" : attr_exp)));
         String resolution_mp = (String.format(Locale.US, "%.1f",
@@ -116,10 +107,7 @@ public class ExifDialogViewModel extends AndroidViewModel {
         }
     }
 
-    /**
-     * Updates the {@link Histogram.HistogramModel} view which is associated with ExifDialogModel
-     * check for more detail {@link com.particlesdevs.photoncamera.gallery.binding.CustomBinding#updateHistogram(Histogram, Histogram.HistogramModel)}
-     */
+
     public void updateHistogramView(ImageFile imageFile) {
         Histogram histogram = new Histogram(getApplication().getBaseContext(), null);
         if (histoRunnable != null) {

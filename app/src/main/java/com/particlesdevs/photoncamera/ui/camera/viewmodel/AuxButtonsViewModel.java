@@ -1,22 +1,4 @@
-/*
- *
- *  PhotonCamera
- *  AuxButtonsViewModel.java
- *  Copyright (C) 2020 - 2021  Vibhor
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- * /
- */
+
 
 package com.particlesdevs.photoncamera.ui.camera.viewmodel;
 
@@ -24,7 +6,6 @@ import android.hardware.camera2.CameraCharacteristics;
 
 import androidx.lifecycle.ViewModel;
 
-import com.particlesdevs.photoncamera.ui.camera.CameraFragment;
 import com.particlesdevs.photoncamera.ui.camera.data.CameraLensData;
 import com.particlesdevs.photoncamera.ui.camera.model.AuxButtonsModel;
 import com.particlesdevs.photoncamera.ui.camera.views.AuxButtonsLayout;
@@ -34,9 +15,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * ViewModel which connects {@link AuxButtonsModel} with {@link CameraFragment}
- */
+
 public class AuxButtonsViewModel extends ViewModel {
     private static final Comparator<CameraLensData> SORT_BY_ZOOM_FACTOR = (o1, o2) -> -Double.compare(o1.getZoomFactor(), o2.getZoomFactor());
     private final AuxButtonsModel auxButtonsModel = new AuxButtonsModel();
