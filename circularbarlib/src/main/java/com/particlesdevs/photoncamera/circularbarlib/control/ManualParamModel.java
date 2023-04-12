@@ -15,12 +15,13 @@ public class ManualParamModel extends Observable {
     private double currentFocusValue;
     private double currentEvValue;
     private double currentExposureValue;
-    private double currentISOValue;
+    private double currentISOValue=200;
 
     public ManualParamModel() {
     }
 
     public double getCurrentFocusValue() {
+        this.currentFocusValue = 0;
         return currentFocusValue;
     }
 
@@ -48,6 +49,12 @@ public class ManualParamModel extends Observable {
     }
 
     public double getCurrentISOValue() {
+
+        /*
+        Set ISO value here;
+
+         */
+
         return currentISOValue;
     }
 

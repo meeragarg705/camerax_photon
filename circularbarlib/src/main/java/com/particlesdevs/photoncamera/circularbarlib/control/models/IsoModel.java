@@ -83,6 +83,10 @@ public class IsoModel extends ManualModel<Integer> {
     public void onSelectedKnobItemChanged(KnobItemInfo knobItemInfo) {
         currentInfo = knobItemInfo;
         manualParamModel.setCurrentISOValue(knobItemInfo.value);
+/*
+ISO Value setting here
+ */
+        Log.d("ISO Value", "onSelectedKnobItemChanged: "+ knobItemInfo.value);
     }
 
     private int findPreferredKnobViewAngle(int indicatorCount) {

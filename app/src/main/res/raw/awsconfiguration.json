@@ -1,0 +1,20 @@
+{
+  "Version": "1.0",
+  "IdentityManager": {
+    "Default": {}
+  },
+"CredentialsProvider": {
+  "CognitoIdentity": {
+    "Default": {
+      "PoolId": "us-east-2:0e435a7f-acc6-463f-815d-6b0fc16fd26d",
+      "Region": "us-east-2"
+    }
+  }
+},
+  "S3TransferUtility": {
+    "Default": {
+      "Bucket": "camera-app-prince",
+      "Region": "us-east-2"
+    }
+  }
+}

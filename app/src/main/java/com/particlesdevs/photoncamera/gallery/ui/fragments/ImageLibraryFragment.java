@@ -178,6 +178,9 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
         LinearLayout shareAws = bottomSheetDialog.findViewById(R.id.shareLinearLayout);
         LinearLayout uploadGoogle = bottomSheetDialog.findViewById(R.id.uploadLinearLayout);
         LinearLayout download = bottomSheetDialog.findViewById(R.id.download);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+
+        String bucketName = pref.getString("aws_bucket_name", "");
 
 
         bottomSheetDialog.show();
@@ -187,7 +190,14 @@ public class ImageLibraryFragment extends Fragment implements ImageGridAdapter.G
 
             bottomSheetDialog.dismiss();
 
-            uploads(imageUris);
+
+            if (bucketName != "") {
+                uploads(imageUris);
+                
+            } else {
+                Log.d("AWS CONFIG", "Not Found");
+                Toast.makeText(getContext(), "Aws Configuration Not Found!", Toast.LENGTH_SHORT).show();
+            }
 
 
         });

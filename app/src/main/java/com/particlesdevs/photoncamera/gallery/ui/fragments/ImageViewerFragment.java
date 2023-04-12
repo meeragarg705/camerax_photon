@@ -2,6 +2,7 @@ package com.particlesdevs.photoncamera.gallery.ui.fragments;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -278,6 +279,8 @@ public class ImageViewerFragment extends Fragment {
     }
 
     private void onGalleryButtonClick(View view) {
+
+//        startActivity(new Intent(getContext(), UploadActivity.class));
         if (navController.getPreviousBackStackEntry() == null)
             navController.navigate(R.id.action_imageViewFragment_to_imageLibraryFragment);
         else navController.navigateUp();
@@ -357,7 +360,7 @@ public class ImageViewerFragment extends Fragment {
         if (bucketName != "") {
             TransferObserver uploadObserver =
                     transferUtility.upload(bucketName, file.getName(), file);
-
+            Toast.makeText(getContext(), "Image Uploading", Toast.LENGTH_LONG).show();
             uploadObserver.setTransferListener(new UploadListener(getContext()));
         } else {
             Log.d("AWS CONFIG", "Not Found");
@@ -529,8 +532,11 @@ class UploadListener implements TransferListener {
 
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+        Toast.makeText(uploadContext, String.format("onProgressChanged: %d, total: %d, current: %d",
+                id, bytesTotal, bytesCurrent), Toast.LENGTH_LONG).show();
         Log.d(TAG, String.format("onProgressChanged: %d, total: %d, current: %d",
                 id, bytesTotal, bytesCurrent));
 

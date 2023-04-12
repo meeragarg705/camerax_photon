@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.util.Log;
-import android.util.Size;
 
 import androidx.preference.PreferenceManager;
 
@@ -134,45 +133,6 @@ public class SettingsManager {
     }
 
     /**
-     * Remove a specific SettingsListener. This should be done in onPause if a
-     * listener has been set.
-     */
-    public void removeListener(OnSettingChangedListener listener) {
-        if (listener == null) {
-            throw new IllegalArgumentException();
-        }
-        if (!mListeners.contains(listener)) {
-            return;
-        }
-        int index = mListeners.indexOf(listener);
-        mListeners.remove(listener);
-        OnSharedPreferenceChangeListener sharedPreferenceListener =
-                mSharedPreferenceListeners.get(index);
-        mSharedPreferenceListeners.remove(index);
-        mDefaultPreferences.unregisterOnSharedPreferenceChangeListener(
-                sharedPreferenceListener);
-        if (mCustomPreferences != null) {
-            mCustomPreferences.unregisterOnSharedPreferenceChangeListener(
-                    sharedPreferenceListener);
-        }
-    }
-
-    /**
-     * Remove all OnSharedPreferenceChangedListener's. This should be done in
-     * onDestroy.
-     */
-    public void removeAllListeners() {
-        for (OnSharedPreferenceChangeListener listener : mSharedPreferenceListeners) {
-            mDefaultPreferences.unregisterOnSharedPreferenceChangeListener(listener);
-            if (mCustomPreferences != null) {
-                mCustomPreferences.unregisterOnSharedPreferenceChangeListener(listener);
-            }
-        }
-        mSharedPreferenceListeners.clear();
-        mListeners.clear();
-    }
-
-    /**
      * Returns the SharedPreferences file matching the scope
      * argument.
      * <p>
@@ -200,30 +160,6 @@ public class SettingsManager {
         mDefaultsStore.storeDefaults(key.mValue, defaultValue, possibleValues);
     }
 
-    /**
-     * Set default and valid values for a setting, for an Integer default and
-     * a set of Integer possible values that are already defined.
-     * This is not required.
-     */
-    public void setDefaults(PreferenceKeys.Key key, int defaultValue, int[] possibleValues) {
-        String defaultValueString = Integer.toString(defaultValue);
-        String[] possibleValuesString = new String[possibleValues.length];
-        for (int i = 0; i < possibleValues.length; i++) {
-            possibleValuesString[i] = Integer.toString(possibleValues[i]);
-        }
-        mDefaultsStore.storeDefaults(key.mValue, defaultValueString, possibleValuesString);
-    }
-
-    /**
-     * Set default and valid values for a setting, for a boolean default.
-     * The set of boolean possible values is always { false, true }.
-     * This is not required.
-     */
-    public void setDefaults(PreferenceKeys.Key key, boolean defaultValue) {
-        String defaultValueString = defaultValue ? "1" : "0";
-        String[] possibleValues = {"0", "1"};
-        mDefaultsStore.storeDefaults(key.mValue, defaultValueString, possibleValues);
-    }
 
     /**
      * Retrieve a default from the DefaultsStore as a String.
@@ -274,6 +210,7 @@ public class SettingsManager {
         SharedPreferences preferences = getPreferencesFromScope(scope);
         return preferences.getStringSet(key.mValue, defaultValue);
     }
+
     public ArrayList<String> getArrayList(String scope, String key, Set<String> defaultValue) {
         SharedPreferences preferences = getPreferencesFromScope(scope);
         return new ArrayList<>(preferences.getStringSet(key, defaultValue));
@@ -347,54 +284,6 @@ public class SettingsManager {
         return getBoolean(scope, key, getBooleanDefault(key));
     }
 
-    /**
-     * Retrieve a setting's value as a {@link Size}. Returns <code>null</code>
-     * if value could not be parsed as a size.
-     */
-    public Size getSize(String scope, PreferenceKeys.Key key) {
-        String strValue = getString(scope, key);
-        if (strValue == null) {
-            return null;
-        }
-        String[] widthHeight = strValue.split("x");
-        if (widthHeight.length != 2) {
-            return null;
-        }
-        try {
-            int width = Integer.parseInt(widthHeight[0]);
-            int height = Integer.parseInt(widthHeight[1]);
-            return new Size(width, height);
-        } catch (NumberFormatException ex) {
-            return null;
-        }
-    }
-
-    /**
-     * If possible values are stored for this key, return the
-     * index into that list of the currently set value.
-     * <p>
-     * For example, if a set of possible values is [2,3,5],
-     * and the current value set of this key is 3, this method
-     * returns 1.
-     * <p>
-     * If possible values are not stored for this key, throw
-     * an IllegalArgumentException.
-     */
-    public int getIndexOfCurrentValue(String scope, PreferenceKeys.Key key) {
-        String[] possibleValues = mDefaultsStore.getPossibleValues(key.mValue);
-        if (possibleValues == null || possibleValues.length == 0) {
-            throw new IllegalArgumentException(
-                    "No possible values for scope=" + scope + " key=" + key);
-        }
-        String value = getString(scope, key);
-        for (int i = 0; i < possibleValues.length; i++) {
-            if (value.equals(possibleValues[i])) {
-                return i;
-            }
-        }
-        throw new IllegalStateException("Current value for scope=" + scope + " key="
-                + key + " not in list of possible values");
-    }
 
     /**
      * Store a setting's value using a String value.  No conversion
@@ -454,6 +343,7 @@ public class SettingsManager {
         SharedPreferences preferences = getPreferencesFromScope(scope);
         preferences.edit().putStringSet(key.mValue, value).apply();
     }
+
     public void set(String scope, String key, ArrayList<String> value) {
         SharedPreferences preferences = getPreferencesFromScope(scope);
         preferences.edit().putStringSet(key, new HashSet<>(value)).apply();
@@ -465,38 +355,6 @@ public class SettingsManager {
         }
     }
 
-    /**
-     * Set a setting to the default value stored in the DefaultsStore.
-     */
-    public void setToDefault(String scope, PreferenceKeys.Key key) {
-        set(scope, key, getStringDefault(key));
-    }
-
-    /**
-     * If a set of possible values is defined, set the current value
-     * of a setting to the possible value found at the given index.
-     * <p>
-     * For example, if the possible values for a key are [2,3,5],
-     * and the index given to this method is 2, then this method would
-     * store the value 5 in SharedPreferences for the key.
-     * <p>
-     * If the index is out of the bounds of the range of possible values,
-     * or there are no possible values for this key, then this
-     * method throws an exception.
-     */
-    public void setValueByIndex(String scope, PreferenceKeys.Key key, int index) {
-        String[] possibleValues = mDefaultsStore.getPossibleValues(key.mValue);
-        if (possibleValues.length == 0) {
-            throw new IllegalArgumentException(
-                    "No possible values for scope=" + scope + " key=" + key);
-        }
-        if (index >= 0 && index < possibleValues.length) {
-            set(scope, key, possibleValues[index]);
-        } else {
-            throw new IndexOutOfBoundsException("For possible values of scope=" + scope
-                    + " key=" + key);
-        }
-    }
 
     /**
      * Check that a setting has some value stored.
@@ -511,15 +369,6 @@ public class SettingsManager {
         return preferences.contains(key);
     }
 
-    /**
-     * Check whether a setting's value is currently set to the
-     * default value.
-     */
-    public boolean isDefault(String scope, PreferenceKeys.Key key) {
-        String defaultValue = getStringDefault(key);
-        String value = getString(scope, key);
-        return value != null && value.equals(defaultValue);
-    }
 
     /**
      * Remove a setting.

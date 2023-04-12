@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.drawable.Drawable;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.core.content.ContextCompat;
 import androidx.core.os.HandlerCompat;
 
 import com.hunter.library.debug.HunterDebug;
@@ -25,18 +23,15 @@ import com.particlesdevs.photoncamera.capture.CaptureController;
 import com.particlesdevs.photoncamera.control.Gravity;
 import com.particlesdevs.photoncamera.control.Gyro;
 import com.particlesdevs.photoncamera.control.Vibration;
-import com.particlesdevs.photoncamera.debugclient.Debugger;
 import com.particlesdevs.photoncamera.pro.SensorSpecifics;
 import com.particlesdevs.photoncamera.pro.Specific;
 import com.particlesdevs.photoncamera.pro.SupportedDevice;
 import com.particlesdevs.photoncamera.processing.render.Parameters;
-import com.particlesdevs.photoncamera.processing.render.PreviewParameters;
 import com.particlesdevs.photoncamera.settings.MigrationManager;
 import com.particlesdevs.photoncamera.settings.PreferenceKeys;
 import com.particlesdevs.photoncamera.settings.SettingsManager;
 import com.particlesdevs.photoncamera.ui.SplashActivity;
 import com.particlesdevs.photoncamera.util.AssetLoader;
-import com.particlesdevs.photoncamera.util.ObjectLoader;
 import com.particlesdevs.photoncamera.util.log.ActivityLifecycleMonitor;
 
 import java.util.concurrent.ExecutorService;
@@ -45,7 +40,7 @@ import java.util.concurrent.Executors;
 public class PhotonCamera extends Application {
     public static final boolean DEBUG = false;
     private static PhotonCamera sPhotonCamera;
-    
+
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor(r -> {
         Thread t = new Thread(r);
@@ -58,14 +53,13 @@ public class PhotonCamera extends Application {
     private Gyro mGyro;
     private Vibration mVibration;
     private Parameters mParameters;
-    private PreviewParameters mPreviewParameters;
     private CaptureController mCaptureController;
     private SupportedDevice mSupportedDevice;
     private SettingsManager mSettingsManager;
     private AssetLoader mAssetLoader;
     private RenderScript mRS;
-    private ObjectLoader objectLoader;
-    private Debugger mDebugger;
+
+
 
     @Nullable
     public static PhotonCamera getInstance(Context context) {
@@ -102,18 +96,14 @@ public class PhotonCamera extends Application {
         return sPhotonCamera.mParameters;
     }
 
-    public static PreviewParameters getPreviewParameters() {
-        return sPhotonCamera.mPreviewParameters;
-    }
 
-    public static Debugger getDebugger(){
-        return sPhotonCamera.mDebugger;
-    }
 
-    public static Specific getSpecific(){
+
+    public static Specific getSpecific() {
         return sPhotonCamera.mSupportedDevice.specific;
     }
-    public static SensorSpecifics getSpecificSensor(){
+
+    public static SensorSpecifics getSpecificSensor() {
         return sPhotonCamera.mSupportedDevice.sensorSpecifics;
     }
 
@@ -151,9 +141,7 @@ public class PhotonCamera extends Application {
         getMainHandler().post(() -> Toast.makeText(sPhotonCamera, msg, Toast.LENGTH_LONG).show());
     }
 
-    public static void showToast(@StringRes int stringRes) {
-        getMainHandler().post(() -> Toast.makeText(sPhotonCamera, stringRes, Toast.LENGTH_LONG).show());
-    }
+
 
     public static void showToastFast(@StringRes int stringRes) {
         getMainHandler().post(() -> Toast.makeText(sPhotonCamera, stringRes, Toast.LENGTH_SHORT).show());
@@ -167,9 +155,7 @@ public class PhotonCamera extends Application {
         return sPhotonCamera.getResources().getString(stringRes);
     }
 
-    public static Drawable getDrawableStatic(int resID) {
-        return ContextCompat.getDrawable(sPhotonCamera, resID);
-    }
+
 
     public static PackageInfo getPackageInfo() throws PackageManager.NameNotFoundException {
         return sPhotonCamera.getPackageManager().getPackageInfo(sPhotonCamera.getPackageName(), 0);
@@ -184,13 +170,6 @@ public class PhotonCamera extends Application {
             e.printStackTrace();
         }
         return version;
-    }
-    public static String getLibsDirectory(){
-        return sPhotonCamera.getApplicationInfo().nativeLibraryDir;
-    }
-
-    public ExecutorService getExecutorService() {
-        return executorService;
     }
 
     public SupportedDevice getSupportedDevice() {
@@ -209,6 +188,7 @@ public class PhotonCamera extends Application {
         initModules();
         super.onCreate();
     }
+
     private void initModules() {
 
 
@@ -228,14 +208,12 @@ public class PhotonCamera extends Application {
         mSettings = new Settings();
 
         mParameters = new Parameters();
-        mPreviewParameters = new PreviewParameters();
         mSupportedDevice = new SupportedDevice(mSettingsManager);
         mAssetLoader = new AssetLoader(this);
         mRS = RenderScript.create(this);
-        mDebugger = new Debugger();
-        
+
+
     }
-    
 
 
     @Override

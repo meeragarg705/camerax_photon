@@ -96,6 +96,12 @@ public class ShutterModel extends ManualModel<Long> {
     public void onSelectedKnobItemChanged(KnobItemInfo knobItemInfo) {
         currentInfo = knobItemInfo;
         manualParamModel.setCurrentExposureValue(knobItemInfo.value);
+
+        /*
+        Shutter Value here
+         */
+
+        Log.d("Shutter Value", "onSelectedKnobItemChanged: "+ knobItemInfo.value);
     }
 
     private int findPreferredIntervalCount(int totalCount) {

@@ -102,8 +102,8 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
     public static final String FRAGMENT_DIALOG = "dialog";
 
     private static final String TAG = CameraFragment.class.getSimpleName();
-    private static final String ACTIVE_BACKCAM_ID = "ACTIVE_BACKCAM_ID"; 
-    private static final String ACTIVE_FRONTCAM_ID = "ACTIVE_FRONTCAM_ID"; 
+    private static final String ACTIVE_BACKCAM_ID = "ACTIVE_BACKCAM_ID";
+    private static final String ACTIVE_FRONTCAM_ID = "ACTIVE_FRONTCAM_ID";
     private static final String NOTIFICATION_CHANNEL_ID = "NOTIFICATION_CHANNEL_ID";
 
     public static String sActiveBackCamId = "0";
@@ -161,6 +161,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
     public CameraFragmentViewModel getCameraFragmentViewModel() {
         return cameraFragmentViewModel;
     }
+
     @HunterDebug
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -173,19 +174,21 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         supportedDevice = Objects.requireNonNull(PhotonCamera.getInstance(activity)).getSupportedDevice();
         supportedDevice.loadCheck();
     }
+
     @HunterDebug
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        
+
         this.cameraFragmentBinding = DataBindingUtil.inflate(inflater, R.layout.camera_fragment, container, false);
         Log.d(TAG, "onCreateView: ");
         initMembers();
         setModelsToLayout();
         return cameraFragmentBinding.getRoot();
     }
+
     private void initMembers() {
-        
+
         cameraFragmentViewModel = new ViewModelProvider(this).get(CameraFragmentViewModel.class);
         DisplayMetrics dm = getResources().getDisplayMetrics();
         logDisplayProperties(dm);
@@ -198,20 +201,21 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         auxButtonsViewModel = new ViewModelProvider(this).get(AuxButtonsViewModel.class);
         surfaceView = cameraFragmentBinding.layoutViewfinder.surfaceView;
         textureView = cameraFragmentBinding.layoutViewfinder.texture;
+
     }
 
     private void setModelsToLayout() {
-        
+
         cameraFragmentBinding.setUimodel(cameraFragmentViewModel.getCameraFragmentModel());
         cameraFragmentBinding.layoutTopbar.setUimodel(cameraFragmentViewModel.getCameraFragmentModel());
         cameraFragmentBinding.layoutBottombar.bottomButtons.setUimodel(cameraFragmentViewModel.getCameraFragmentModel());
-        
+
         cameraFragmentBinding.layoutBottombar.bottomButtons.setTimermodel(timerFrameCountViewModel.getTimerFrameCountModel());
         cameraFragmentBinding.layoutViewfinder.setTimermodel(timerFrameCountViewModel.getTimerFrameCountModel());
-        
+
         cameraFragmentBinding.setAuxmodel(auxButtonsViewModel.getAuxButtonsModel());
     }
-    @HunterDebug
+
     @Override
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
         this.mCameraUIView = new CameraUIViewImpl();
@@ -231,7 +235,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         settingsBarEntryProvider.addEntries(cameraFragmentBinding.settingsBar);
     }
 
-    private void updateSettingsBar(){
+    private void updateSettingsBar() {
         settingsBarEntryProvider.updateAllEntries();
         settingsBarEntryProvider.addEntries(cameraFragmentBinding.settingsBar);
         this.mCameraUIView.refresh(CaptureController.isProcessing);
@@ -266,6 +270,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }
+
     @HunterDebug
     @Override
     public void onResume() {
@@ -277,7 +282,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             PhotonCamera.getGyro().register();
             PhotonCamera.getGravity().register();
             burstPlayer = MediaPlayer.create(activity, R.raw.sound_burst2);
-            endPlayer = MediaPlayer.create(activity,R.raw.sound_end);
+            endPlayer = MediaPlayer.create(activity, R.raw.sound_end);
             cameraFragmentViewModel.updateGalleryThumb(null);
         });
         cameraFragmentViewModel.onResume();
@@ -292,7 +297,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         if (cameraFragmentBinding != null && captureController != null) {
             View focusCircle = cameraFragmentBinding.layoutViewfinder.touchFocus;
             textureView.post(() -> {
-                mTouchFocus = new TouchFocus(captureController,focusCircle,textureView);
+                mTouchFocus = new TouchFocus(captureController, focusCircle, textureView);
             });
         }
     }
@@ -340,7 +345,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         getParentFragmentManager().beginTransaction().remove(CameraFragment.this).commitAllowingStateLoss();
         for (Future<?> taskResult : captureController.taskResults) {
             try {
-                taskResult.get(); 
+                taskResult.get();
             } catch (ExecutionException | InterruptedException ignored) {
             }
         }
@@ -415,19 +420,19 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         float top = (((float) meteringRectangle.getX() / captureController.mImageReaderPreview.getWidth()) * (textureView.getHeight()));
         float width = (((float) meteringRectangle.getHeight() / captureController.mImageReaderPreview.getHeight()) * (textureView.getWidth()));
         float height = (((float) meteringRectangle.getWidth() / captureController.mImageReaderPreview.getWidth()) * (textureView.getHeight()));
-        
+
         return new RectF(
-                
-                textureView.getWidth()-left-width,
-                top,  
-                
-                textureView.getWidth()-left,
-                top + height 
+
+                textureView.getWidth() - left - width,
+                top,
+
+                textureView.getWidth() - left,
+                top + height
         );
     }
 
     private String getResultFieldName(String prefix, Integer value) {
-        if(value == null) return "";
+        if (value == null) return "";
         for (Field f : this.metadataFields)
             if (f.getName().startsWith(prefix)) {
                 try {
@@ -573,9 +578,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         notificationManager.cancel(NOTIFICATION_ID);
     }
 
-    
-    
-    
 
     /**
      * Shows an error message dialog.
@@ -608,9 +610,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         }
     }
 
-    
-    
-    
 
     private class CameraEventsListenerImpl extends CameraEventsListener {
         /**
@@ -659,7 +658,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             onProcessingFinished("Processing Finished Unexpectedly!!");
         }
 
-        
 
         /**
          * Implementation of {@link CaptureEventsListener}
@@ -676,10 +674,11 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         }
 
         private long prevPlayTime = 0;
+
         @Override
         public void onFrameCaptureStarted(Object o) {
             long seekDelay = 50;
-            if(prevPlayTime + seekDelay < System.currentTimeMillis()){
+            if (prevPlayTime + seekDelay < System.currentTimeMillis()) {
                 prevPlayTime = System.currentTimeMillis();
                 burstPlayer.seekTo(0);
             }
@@ -688,6 +687,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
         @Override
         public void onBurstPrepared(Object o) {
         }
+
         @Override
         public void onFrameCaptureProgressed(Object o) {
         }
@@ -765,10 +765,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             triggerMediaScanner(fileUri);
         }
     }
-
-    
-    
-    
 
     /**
      * This Class is a dumb 'View' which contains view components visible in the main Camera User Interface
@@ -850,6 +846,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
 
             }
         }
+
         @Override
         public void refresh(boolean processing) {
             cameraFragmentBinding.invalidateAll();
@@ -904,10 +901,6 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             bottombuttons = null;
         }
     }
-
-    
-    
-    
 
     /**
      * Implementation of {@link CameraUIView.CameraUIEventsListener}
@@ -983,7 +976,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
                     break;
 
                 case R.id.flash_button:
-                    PreferenceKeys.setAeMode((PreferenceKeys.getAeMode() + 1) % 4); 
+                    PreferenceKeys.setAeMode((PreferenceKeys.getAeMode() + 1) % 4);
                     ((FlashButton) view).setFlashValueState(PreferenceKeys.getAeMode());
                     captureController.setPreviewAEModeRebuild(PreferenceKeys.getAeMode());
                     updateSettingsBar();
@@ -1025,9 +1018,10 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
 
         }
 
-        private void setID(String input){
+        private void setID(String input) {
             PreferenceKeys.setCameraID(String.valueOf(input));
         }
+
         @Override
         public void onCameraModeChanged(CameraMode cameraMode) {
             PreferenceKeys.setCameraModeOrdinal(cameraMode.ordinal());
@@ -1064,7 +1058,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
                     Object value = topBarSettingsData.getValue();
                     switch (type) {
                         case FLASH:
-                            PreferenceKeys.setAeMode((Integer) value); 
+                            PreferenceKeys.setAeMode((Integer) value);
                             captureController.setPreviewAEModeRebuild(PreferenceKeys.getAeMode());
                             cameraFragmentBinding.layoutTopbar.flashButton.setFlashValueState((Integer) value);
                             break;

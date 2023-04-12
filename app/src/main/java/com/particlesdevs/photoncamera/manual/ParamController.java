@@ -98,6 +98,10 @@ public class ParamController implements Observer {
             ManualParamModel model = (ManualParamModel) o;
             manualParamModel = model;
             if (arg.equals(ManualParamModel.ID_ISO)) {
+/*
+Set manual mode always true here
+
+ */
                 setISO((int) model.getCurrentISOValue(), model.getCurrentExposureValue());
             }
             if (arg.equals(ManualParamModel.ID_EV)) {

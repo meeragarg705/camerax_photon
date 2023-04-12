@@ -1,19 +1,14 @@
 package com.particlesdevs.photoncamera.control;
 
-import android.graphics.RectF;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.particlesdevs.photoncamera.circularbarlib.api.ManualModeConsole;
-import com.particlesdevs.photoncamera.circularbarlib.control.ManualParamModel;
 import com.particlesdevs.photoncamera.R;
 import com.particlesdevs.photoncamera.capture.CaptureController;
+import com.particlesdevs.photoncamera.circularbarlib.api.ManualModeConsole;
 import com.particlesdevs.photoncamera.ui.camera.CameraFragment;
 import com.particlesdevs.photoncamera.ui.camera.viewmodel.CameraFragmentViewModel;
 
@@ -97,33 +92,13 @@ public class Swipe {
         if (holder != null) holder.setOnTouchListener(touchListener);
     }
 
-    private void startTouchToFocus(MotionEvent event) {
-        //takes into consideration the top and bottom translation of camera_container(if it has been moved due to different display ratios)
-        // for calculation of size of viewfinder RectF.(for touch focus detection)
-        ConstraintLayout camera_container = cameraFragment.findViewById(R.id.camera_container);
-        FrameLayout layout_viewfinder = cameraFragment.findViewById(R.id.layout_viewfinder);
-        RectF viewfinderRect = new RectF(
-                layout_viewfinder.getLeft(),//left edge of viewfinder
-                camera_container.getY(), //y position of camera_container
-                layout_viewfinder.getRight(), //right edge of viewfinder
-                layout_viewfinder.getBottom() + camera_container.getY() //bottom edge of viewfinder + y position of camera_container
-        );
-        // Interface.getCameraFragment().showToast(previewRect.toString()+"\nCurX"+event.getX()+"CurY"+event.getY());
-        if (viewfinderRect.contains(event.getX(), event.getY())) {
-            float translateX = event.getX() - camera_container.getLeft();
-            float translateY = event.getY() - camera_container.getTop();
-            if (manualModeConsole.getManualParamModel().getCurrentFocusValue() == ManualParamModel.FOCUS_AUTO)
-                cameraFragment.getTouchFocus().processTouchToFocus(translateX, translateY);
-        }
-    }
-
     public void SwipeUp() {
         if (cameraFragmentViewModel.isSettingsBarVisible()) {
             cameraFragmentViewModel.setSettingsBarVisible(false);
         } else {
             ocManual.animate().rotation(180).setDuration(250).start();
             manualModeConsole.setPanelVisibility(true);
-            cameraFragment.getTouchFocus().resetFocusCircle();
+
         }
 
     }

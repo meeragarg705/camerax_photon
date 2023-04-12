@@ -31,7 +31,7 @@ class MultiUploaderS3 {
             )
     }
 
-    private fun transferUtility(context: Context): Single<TransferUtility?>? {
+    private fun transferUtility(context: Context): Single<TransferUtility?> {
         return Single.create { emitter ->
             emitter.onSuccess(
                 TransferUtility(s3ClientInitialization(context), context)
@@ -39,8 +39,8 @@ class MultiUploaderS3 {
         }
     }
 
-    fun uploadMultiple(fileToKeyUploads: MutableMap<String, File>, context: Context): Completable? {
-        return transferUtility(context)!!
+    fun uploadMultiple(fileToKeyUploads: MutableMap<String, File>, context: Context): Completable {
+        return transferUtility(context)
             .flatMapCompletable { transferUtility ->
                 Observable.fromIterable(fileToKeyUploads.entries)
                     .flatMapCompletable { entry ->
@@ -60,7 +60,7 @@ class MultiUploaderS3 {
         aLocalFile: File?,
         toRemoteKey: String?,
         context: Context
-    ): Completable? {
+    ): Completable {
         val pref = PreferenceManager.getDefaultSharedPreferences(context)
 //            Toast.makeText(getContext(), "Amazon S3 is Clicked", Toast.LENGTH_LONG).show();
         val bucketName = pref.getString("aws_bucket_name", "")
@@ -72,6 +72,7 @@ class MultiUploaderS3 {
                         id: Int,
                         state: TransferState
                     ) {
+
                         if (TransferState.FAILED == state) {
                             emitter.onError(Exception("Transfer state was FAILED."))
                         } else if (TransferState.COMPLETED == state) {
