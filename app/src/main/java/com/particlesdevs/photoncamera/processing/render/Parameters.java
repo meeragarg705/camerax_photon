@@ -135,17 +135,13 @@ public class Parameters {
 
     public void FillDynamicParameters(CaptureResult result) {
         sensorSpecifics = PhotonCamera.getSpecificSensor().selectedSensorSpecifics;
-        noiseModeler = new NoiseModeler(result.get(CaptureResult.SENSOR_NOISE_PROFILE), analogIso, result.get(CaptureResult.SENSOR_SENSITIVITY), cfaPattern, sensorSpecifics);
+        noiseModeler = new NoiseModeler(result.get(CaptureResult.SENSOR_NOISE_PROFILE), analogIso, 3200, cfaPattern, sensorSpecifics);
         int[] blarr = new int[4];
         BlackLevelPattern level = CaptureController.mCameraCharacteristics.get(CameraCharacteristics.SENSOR_BLACK_LEVEL_PATTERN);
         if (result != null) {
             boolean isHuawei = Build.BRAND.equals("Huawei");
 
-            /*float[] dynbl = result.get(CaptureResult.SENSOR_DYNAMIC_BLACK_LEVEL);
-            if (dynbl != null) {
-                System.arraycopy(dynbl, 0, blackLevel, 0, 4);
-                usedDynamic = true;
-            }*/
+            
 
             LensShadingMap lensMap = result.get(CaptureResult.STATISTICS_LENS_SHADING_CORRECTION_MAP);
             if (lensMap != null) {

@@ -54,13 +54,13 @@
             android:layout="@layout/preference_with_margin"
             android:summary=""
             android:title="@string/turn_on_round_edges" />
-        <com.particlesdevs.photoncamera.ui.settings.custompreferences.ManagedSwitchPreference
-            android:defaultValue="@bool/pref_show_watermark_default"
-            android:icon="@drawable/ic_watermark"
-            android:key="@string/pref_show_watermark_key"
-            android:layout="@layout/preference_with_margin"
-            android:summary=""
-            android:title="@string/turn_on_watermark" />
+<!--        <com.particlesdevs.photoncamera.ui.settings.custompreferences.ManagedSwitchPreference-->
+<!--            android:defaultValue="@bool/pref_show_watermark_default"-->
+<!--            android:icon="@drawable/ic_watermark"-->
+<!--            android:key="@string/pref_show_watermark_key"-->
+<!--            android:layout="@layout/preference_with_margin"-->
+<!--            android:summary=""-->
+<!--            android:title="@string/turn_on_watermark" />-->
         <ListPreference
             android:defaultValue="@string/pref_af_mode_default_value"
             android:entries="@array/af_mode_entries"

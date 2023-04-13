@@ -69,39 +69,6 @@ public class MyService extends Service {
         return null;
     }
 
-//    private class DownloadListener implements TransferListener {
-//
-//        private boolean notifyDownloadActivityNeeded = true;
-//
-//        // Simply updates the list when notified.
-//        @Override
-//        public void onError(int id, Exception e) {
-//            Log.e(TAG, "onError: " + id, e);
-//            if (notifyDownloadActivityNeeded) {
-//                DownloadActivity.initData();
-//                notifyDownloadActivityNeeded = false;
-//            }
-//        }
-//
-//        @Override
-//        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-//            Log.d(TAG, String.format("onProgressChanged: %d, total: %d, current: %d",
-//                    id, bytesTotal, bytesCurrent));
-//            if (notifyDownloadActivityNeeded) {
-//                DownloadActivity.initData();
-//                notifyDownloadActivityNeeded = false;
-//            }
-//        }
-//
-//        @Override
-//        public void onStateChanged(int id, TransferState state) {
-//            Log.d(TAG, "onStateChanged: " + id + ", " + state);
-//            if (notifyDownloadActivityNeeded) {
-//                DownloadActivity.initData();
-//                notifyDownloadActivityNeeded = false;
-//            }
-//        }
-//    }
 
     private class UploadListener implements TransferListener {
 

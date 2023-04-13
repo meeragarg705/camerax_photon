@@ -59,6 +59,10 @@ public class PhotonCamera extends Application {
     private AssetLoader mAssetLoader;
     private RenderScript mRS;
 
+    private String ISOValuesParameter = null;
+    private String ISOParameter = null;
+    private String ISOValues = null;
+
 
 
     @Nullable

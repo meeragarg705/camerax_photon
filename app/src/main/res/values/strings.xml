@@ -152,7 +152,7 @@
     <string name="upload_file_in_background">Upload In Background</string>
     <string name="manage_upload">Manage uploads</string>
     <string name="upload_file">Upload a file</string>
-    <string name="upload_image">Upload an image</string>
+    <string name="upload_image">Select Image</string>
     <string name="pause">Pause</string>
     <string name="resume">Resume</string>
     <string name="delete">Delete</string>

@@ -1,10 +1,14 @@
 package com.particlesdevs.photoncamera.util;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 
+import androidx.preference.PreferenceManager;
+
 import com.amazonaws.auth.AWSCredentialsProvider;
+import com.amazonaws.auth.CognitoCachingCredentialsProvider;
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.Callback;
 import com.amazonaws.mobile.client.UserStateDetails;
@@ -12,6 +16,7 @@ import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
 
 import org.json.JSONException;
@@ -74,11 +79,24 @@ public class Utils {
     public AmazonS3Client getS3Client(Context context) {
         if (sS3Client == null) {
             try {
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+                String poolId = pref.getString("aws_pool_id_config", "");
+                String regionId = pref.getString("aws_region_id_config", "");
+                CognitoCachingCredentialsProvider cognitoCachingCredentialsProvider = new CognitoCachingCredentialsProvider(
+                        context,
+                        poolId,
+                        Regions.fromName(regionId)
+                );
+//                return new AmazonS3Client(
+//                        cognitoCachingCredentialsProvider
+//
+//                        );
+
                 String regionString = new AWSConfiguration(context)
                         .optJsonObject("S3TransferUtility")
                         .getString("Region");
                 Region region = Region.getRegion(regionString);
-                sS3Client = new AmazonS3Client(getCredProvider(context), region);
+                sS3Client = new AmazonS3Client(cognitoCachingCredentialsProvider);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

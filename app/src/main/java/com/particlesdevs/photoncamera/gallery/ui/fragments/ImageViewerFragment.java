@@ -55,6 +55,7 @@ import com.particlesdevs.photoncamera.gallery.model.GalleryItem;
 import com.particlesdevs.photoncamera.gallery.viewmodel.ExifDialogViewModel;
 import com.particlesdevs.photoncamera.gallery.viewmodel.GalleryViewModel;
 import com.particlesdevs.photoncamera.processing.ImagePath;
+import com.particlesdevs.photoncamera.ui.upload.UploadActivity;
 import com.particlesdevs.photoncamera.util.AwsUtils;
 
 import org.apache.commons.io.FileUtils;
@@ -84,10 +85,10 @@ public class ImageViewerFragment extends Fragment {
     private boolean isExifVisible;
     private String mode;
     static TransferUtility transferUtility;
-    
+
     static List<TransferObserver> observers;
     static ArrayList<HashMap<String, Object>> transferRecordMaps;
-    
+
     static AwsUtils awsUtils;
     private SSIVListener ssivListener = new SSIVListener() {
         @Override
@@ -195,12 +196,12 @@ public class ImageViewerFragment extends Fragment {
 
                 @Override
                 public void onImageSelectionChanged(int numOfSelectedFiles) {
-                    
+
                 }
 
                 @Override
                 public void onImageSelectionStopped() {
-                    
+
                 }
             });
         }
@@ -279,11 +280,20 @@ public class ImageViewerFragment extends Fragment {
     }
 
     private void onGalleryButtonClick(View view) {
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getContext());
+        String pool_id = pref.getString("aws_pool_id_config", "");
 
-//        startActivity(new Intent(getContext(), UploadActivity.class));
-        if (navController.getPreviousBackStackEntry() == null)
-            navController.navigate(R.id.action_imageViewFragment_to_imageLibraryFragment);
-        else navController.navigateUp();
+
+        if (pool_id.equals("")) {
+            Toast.makeText(getContext(), "AWS Configuration Not Found", Toast.LENGTH_SHORT).show();
+        } else {
+            startActivity(new Intent(getContext(), UploadActivity.class));
+        }
+
+
+//        if (navController.getPreviousBackStackEntry() == null)
+//            navController.navigate(R.id.action_imageViewFragment_to_imageLibraryFragment);
+//        else navController.navigateUp();
     }
 
     private void onEditButtonClick(View view) {
@@ -310,8 +320,6 @@ public class ImageViewerFragment extends Fragment {
             if (resultCode == Activity.RESULT_CANCELED) {
 
 
-
-
             }
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null && data.getData() != null) {
@@ -323,7 +331,7 @@ public class ImageViewerFragment extends Fragment {
                     updateExif();
                 }
             }
-            
+
         }
     }
 
@@ -394,7 +402,7 @@ public class ImageViewerFragment extends Fragment {
                 return cursor.getString(columnIndex);
             }
         }
-        
+
         Log.w(TAG, "Couldnt determine DISPLAY_NAME for Uri.  Falling back to Uri path: " + uri.getPath());
         return uri.getPath();
     }
@@ -504,7 +512,7 @@ public class ImageViewerFragment extends Fragment {
             galleryItems.remove(indexToDelete);
             initImageAdapter(galleryItems);
             refreshLinearGridAdapter(galleryItems);
-            
+
             viewPager.setCurrentItem(indexToDelete, true);
             updateExif();
             Toast.makeText(getContext(), R.string.image_deleted, Toast.LENGTH_SHORT).show();
@@ -524,11 +532,11 @@ class UploadListener implements TransferListener {
         uploadContext = context;
     }
 
-    
+
     @Override
     public void onError(int id, Exception e) {
         Log.e(TAG, "Error during upload: " + id, e);
-        Toast.makeText(uploadContext, "Image Upload Failed."+ e.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(uploadContext, "Image Upload Failed." + e.getMessage(), Toast.LENGTH_LONG).show();
 
     }
 

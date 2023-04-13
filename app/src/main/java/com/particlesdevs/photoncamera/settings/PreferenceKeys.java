@@ -162,7 +162,7 @@ public class PreferenceKeys {
     }
 
     public static boolean isShowWatermarkOn() {
-        return preferenceKeys.settingsManager.getBoolean(SCOPE_GLOBAL, Key.KEY_SHOW_WATERMARK);
+        return false;
     }
 
     public static boolean isPerLensSettingsOn() {

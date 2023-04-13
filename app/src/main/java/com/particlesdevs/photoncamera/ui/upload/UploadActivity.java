@@ -3,6 +3,7 @@ package com.particlesdevs.photoncamera.ui.upload;
 
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -52,15 +53,9 @@ public class UploadActivity extends ListActivity {
     private static final int UPLOAD_IN_BACKGROUND_REQUEST_CODE = 1;
 
     // Button for upload operations
-    private Button btnUploadFile;
-    private Button btnUploadFileInBackground;
+
     private Button btnUploadImage;
-    private Button btnPause;
-    private Button btnResume;
-    private Button btnCancel;
-    private Button btnDelete;
-    private Button btnPauseAll;
-    private Button btnCancelAll;
+
 
     // The TransferUtility is the primary class for managing transfer to S3
     static TransferUtility transferUtility;
@@ -151,10 +146,10 @@ public class UploadActivity extends ListActivity {
          * with the keys of the map being related to the columns in the adapter
          */
         simpleAdapter = new SimpleAdapter(this, transferRecordMaps,
-                R.layout.record_item, new String[] {
+                R.layout.record_item, new String[]{
                 "checked", "fileName", "progress", "bytes", "state", "percentage"
         },
-                new int[] {
+                new int[]{
                         R.id.radioButton1, R.id.textFileName, R.id.progressBar1, R.id.textBytes,
                         R.id.textState, R.id.textPercentage
                 });
@@ -193,51 +188,9 @@ public class UploadActivity extends ListActivity {
             }
         });
 
-        btnUploadFile = findViewById(R.id.buttonUploadFile);
-        btnUploadFileInBackground = findViewById(R.id.buttonUploadFileInBackground);
+
         btnUploadImage = findViewById(R.id.buttonUploadImage);
-        btnPause = findViewById(R.id.buttonPause);
-        btnResume = findViewById(R.id.buttonResume);
-        btnCancel = findViewById(R.id.buttonCancel);
-        btnDelete = findViewById(R.id.buttonDelete);
-        btnPauseAll = findViewById(R.id.buttonPauseAll);
-        btnCancelAll = findViewById(R.id.buttonCancelAll);
 
-        btnUploadFile.setOnClickListener(view -> {
-            Intent intent = new Intent();
-            if (Build.VERSION.SDK_INT >= 19) {
-                // For Android KitKat, we use a different intent to ensure
-                // we can
-                // get the file path from the returned intent URI
-                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                intent.setType("*/*");
-            } else {
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                intent.setType("file/*");
-            }
-
-            startActivityForResult(intent, UPLOAD_REQUEST_CODE);
-        });
-
-        btnUploadFileInBackground.setOnClickListener(view -> {
-            Intent intent = new Intent();
-            if (Build.VERSION.SDK_INT >= 19) {
-                // For Android KitKat, we use a different intent to ensure
-                // we can
-                // get the file path from the returned intent URI
-                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-                intent.setType("*/*");
-            } else {
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                intent.setType("file/*");
-            }
-
-            startActivityForResult(intent, UPLOAD_IN_BACKGROUND_REQUEST_CODE);
-        });
 
         btnUploadImage.setOnClickListener(view -> {
             Intent intent = new Intent();
@@ -247,7 +200,7 @@ public class UploadActivity extends ListActivity {
                 // we can get the file path from the returned intent URI
                 intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                 intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
             } else {
                 intent.setAction(Intent.ACTION_GET_CONTENT);
             }
@@ -255,80 +208,6 @@ public class UploadActivity extends ListActivity {
             intent.setType("image/*");
             startActivityForResult(intent, UPLOAD_REQUEST_CODE);
         });
-
-        btnPause.setOnClickListener(view -> {
-            // Make sure the user has selected a transfer
-            if (checkedIndex >= 0 && checkedIndex < observers.size()) {
-                Boolean paused = transferUtility.pause(observers.get(checkedIndex).getId());
-                /**
-                 * If paused does not return true, it is likely because the
-                 * user is trying to pause an upload that is not in a
-                 * pausable state (For instance it is already paused, or
-                 * canceled).
-                 */
-                if (!paused) {
-                    Toast.makeText(
-                            UploadActivity.this,
-                            "Cannot pause transfer.  You can only pause transfers in a IN_PROGRESS or WAITING state.",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnResume.setOnClickListener(view -> {
-            // Make sure the user has selected a transfer
-            if (checkedIndex >= 0 && checkedIndex < observers.size()) {
-                TransferObserver resumed = transferUtility.resume(observers.get(checkedIndex)
-                        .getId());
-                // Sets a new transfer listener to the original observer.
-                // This will overwrite existing listener.
-                observers.get(checkedIndex).setTransferListener(new UploadListener());
-                /**
-                 * If resume returns null, it is likely because the transfer
-                 * is not in a resumable state (For instance it is already
-                 * running).
-                 */
-                if (resumed == null) {
-                    Toast.makeText(
-                            UploadActivity.this,
-                            "Cannot resume transfer.  You can only resume transfers in a PAUSED state.",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnCancel.setOnClickListener(view -> {
-            // Make sure a transfer is selected
-            if (checkedIndex >= 0 && checkedIndex < observers.size()) {
-                Boolean canceled = transferUtility.cancel(observers.get(checkedIndex).getId());
-                /*
-                 * If cancel returns false, it is likely because the
-                 * transfer is already canceled
-                 */
-                if (!canceled) {
-                    Toast.makeText(
-                            UploadActivity.this,
-                            "Cannot cancel transfer.  You can only resume transfers in a PAUSED, WAITING, or IN_PROGRESS state.",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        btnDelete.setOnClickListener(view -> {
-            // Make sure a transfer is selected
-            if (checkedIndex >= 0 && checkedIndex < observers.size()) {
-                transferUtility.deleteTransferRecord(observers.get(checkedIndex).getId());
-                observers.remove(checkedIndex);
-                transferRecordMaps.remove(checkedIndex);
-                checkedIndex = INDEX_NOT_CHECKED;
-                updateButtonAvailability();
-                updateList();
-            }
-        });
-
-        btnPauseAll.setOnClickListener(view -> transferUtility.pauseAllWithType(TransferType.UPLOAD));
-
-        btnCancelAll.setOnClickListener(view -> transferUtility.cancelAllWithType(TransferType.UPLOAD));
 
         updateButtonAvailability();
     }
@@ -353,26 +232,36 @@ public class UploadActivity extends ListActivity {
      */
     private void updateButtonAvailability() {
         boolean availability = checkedIndex >= 0;
-        btnPause.setEnabled(availability);
-        btnResume.setEnabled(availability);
-        btnCancel.setEnabled(availability);
-        btnDelete.setEnabled(availability);
+
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == UPLOAD_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                Uri uri = data.getData();
-                try {
-                    File file = readContentToFile(uri);
-                    beginUpload(file);
-                } catch (IOException e) {
-                    Toast.makeText(this,
-                            "Unable to find selected file. See error log for details",
-                            Toast.LENGTH_LONG).show();
-                    Log.e(TAG, "Unable to upload file from the given uri", e);
+
+                if (data.getClipData() != null) {
+                    ClipData mClipData = data.getClipData();
+                    ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
+                    for (int i = 0; i < mClipData.getItemCount(); i++) {
+
+                        ClipData.Item item = mClipData.getItemAt(i);
+                        Uri uri = item.getUri();
+                        try {
+
+                            File file = readContentToFile(uri);
+                            beginUpload(file);
+                        } catch (IOException e) {
+                            Toast.makeText(this,
+                                    "Unable to find selected file. See error log for details",
+                                    Toast.LENGTH_LONG).show();
+                            Log.e(TAG, "Unable to upload file from the given uri", e);
+                        }
+
+                    }
+                    Log.v("LOG_TAG", "Selected Images" + mArrayUri.size());
                 }
+
             }
         } else if (requestCode == UPLOAD_IN_BACKGROUND_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
@@ -437,6 +326,7 @@ public class UploadActivity extends ListActivity {
 
     /**
      * Copies the resource associated with the Uri to a new File in the cache directory, and returns the File
+     *
      * @param uri the Uri
      * @return a copy of the Uri's content as a File in the cache directory
      * @throws IOException if openInputStream fails or writing to the OutputStream fails
@@ -457,14 +347,15 @@ public class UploadActivity extends ListActivity {
 
     /**
      * Returns the filename for the given Uri
+     *
      * @param uri the Uri
      * @return String representing the file name (DISPLAY_NAME)
      */
     private String getDisplayName(Uri uri) {
-        final String[] projection = { MediaStore.Images.Media.DISPLAY_NAME };
+        final String[] projection = {MediaStore.Images.Media.DISPLAY_NAME};
         try (
                 Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        ){
+        ) {
             int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
             if (cursor.moveToFirst()) {
                 return cursor.getString(columnIndex);
