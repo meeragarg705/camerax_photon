@@ -740,6 +740,7 @@ public class CameraFragment extends Fragment implements BaseActivity.BackPressed
             auxButtonsViewModel.setActiveId(PreferenceKeys.getCameraID());
             Boolean flashAvailable = characteristics.get(CameraCharacteristics.FLASH_INFO_AVAILABLE);
             mCameraUIView.showFlashButton(flashAvailable != null && flashAvailable);
+
             manualModeConsole.init(activity, characteristics);
             manualModeConsole.onResume();
         }

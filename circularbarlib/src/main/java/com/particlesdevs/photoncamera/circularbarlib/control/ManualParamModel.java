@@ -15,7 +15,7 @@ public class ManualParamModel extends Observable {
     private double currentFocusValue;
     private double currentEvValue;
     private double currentExposureValue;
-    private double currentISOValue=200;
+    private double currentISOValue;
 
     public ManualParamModel() {
     }

@@ -39,7 +39,9 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.Photon.BaseApp"
-        tools:targetApi="q">
+        tools:targetApi="tiramisu"
+        android:enableOnBackInvokedCallback="true"
+        >
         <activity
             android:name="com.particlesdevs.photoncamera.ui.upload.UploadActivity"
             android:exported="false" />

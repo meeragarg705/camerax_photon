@@ -537,7 +537,6 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
     }
 
 
-
     private Size getCameraOutputSize(Size[] in) {
         Arrays.sort(in, new CompareSizesByArea());
         List<Size> sizes = new ArrayList<>(Arrays.asList(in));
@@ -706,7 +705,6 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
         }
 
         Matrix matrix = new Matrix();
-
 
 
         mTextureView.setTransform(matrix);
@@ -911,6 +909,7 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
             cameraEventsListener.onOpenCamera(this.mCameraManager);
             setUpCameraOutputs(width, height);
             configureTransform(width, height);
+
             try {
                 if (!mCameraOpenCloseLock.tryAcquire(1000, TimeUnit.MILLISECONDS)) {
                     throw new RuntimeException("Time out waiting to lock camera opening.");
@@ -1227,14 +1226,7 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
                     cameraEventsListener.onCaptureSequenceCompleted(null);
                     burst = false;
 
-//                    activity.runOnUiThread(() -> UpdateCameraCharacteristics(PhotonCamera.getSettings().mCameraID));
-//                    if (!isDualSession)
-//                        unlockFocus();
-//                    else
-//                        createCameraPreviewSession(false);
-//                    taskResults.removeIf(Future::isDone);
-//                    Future<?> result = processExecutor.submit(() -> mImageSaver.runRaw(mCameraCharacteristics, mCaptureResult, BurstShakiness, cameraRotation));
-//                    taskResults.add(result);
+                    activity.runOnUiThread(() -> UpdateCameraCharacteristics(PhotonCamera.getSettings().mCameraID));
 
                     createCameraPreviewSession(false);
                     taskResults.removeIf(Future::isDone);
@@ -1458,7 +1450,6 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
     }
 
 
-
     /**
      * Start the timer for the pre-capture sequence.
      * <p/>
@@ -1505,6 +1496,7 @@ public class CaptureController implements MediaRecorder.OnInfoListener {
                         mCameraCharacteristicsMap.get(PhotonCamera.getSettings().mCameraID),
                         PhotonCamera.getSettings().selectedMode);
                 openCamera(optimal.getWidth(), optimal.getHeight());
+
             } else {
                 mTextureView.setSurfaceTextureListener(mSurfaceTextureListener);
             }

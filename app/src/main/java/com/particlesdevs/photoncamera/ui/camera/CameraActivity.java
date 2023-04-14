@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -137,23 +136,23 @@ public class CameraActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        int action = event.getAction();
-        int keyCode = event.getKeyCode();
-        switch (keyCode) {
-            case KeyEvent.KEYCODE_VOLUME_UP:
-            case KeyEvent.KEYCODE_VOLUME_DOWN:
-                if (action == KeyEvent.ACTION_DOWN) {
-                    View view = findViewById(R.id.shutter_button);
-                    if (view.isClickable())
-                        view.performClick();
-                }
-                return true;
-            default:
-                return super.dispatchKeyEvent(event);
-        }
-    }
+//    @Override
+//    public boolean dispatchKeyEvent(KeyEvent event) {
+////        int action = event.getAction();
+////        int keyCode = event.getKeyCode();
+////        switch (keyCode) {
+////            case KeyEvent.KEYCODE_VOLUME_UP:
+////            case KeyEvent.KEYCODE_VOLUME_DOWN:
+////                if (action == KeyEvent.ACTION_DOWN) {
+////                    View view = findViewById(R.id.shutter_button);
+////                    if (view.isClickable())
+////                        view.performClick();
+////                }
+////                return true;
+////            default:
+////                return super.dispatchKeyEvent(event);
+//        }
+//    }
 
 
     @Override
